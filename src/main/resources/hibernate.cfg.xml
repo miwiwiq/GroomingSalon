@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.url">jdbc:postgresql://localhost:5432/salon</property>
+    <property name="connection.driver_class">org.postgresql.Driver</property>
+    <property name="connection.username">postgres</property>
+    <property name="connection.password">pass</property>
+
+    <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
+
+    <!-- DB schema will be updated if needed -->
+     <property name="hibernate.hbm2ddl.auto">update</property>
+<!--     <property name="hibernate.hbm2ddl.create_references">create</property>-->
+    <mapping class="com.znvks.salon.entity.account.Account"/>
+    <mapping class="com.znvks.salon.entity.Pet"/>
+    <mapping class="com.znvks.salon.entity.account.Admin"/>
+    <mapping class="com.znvks.salon.entity.account.User"/>
+    <mapping class="com.znvks.salon.entity.Kind"/>
+    <mapping class="com.znvks.salon.entity.Service"/>
+    <mapping class="com.znvks.salon.entity.Form"/>
+    <mapping class="com.znvks.salon.entity.Reservation"/>
+  </session-factory>
+</hibernate-configuration>
