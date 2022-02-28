@@ -1,5 +1,7 @@
 package com.znvks.salon.entity;
 
+import lombok.Getter;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -7,6 +9,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
 import java.io.Serializable;
 
+@Getter
 @MappedSuperclass
 public abstract class BaseEntity<PK extends Serializable> {
 
