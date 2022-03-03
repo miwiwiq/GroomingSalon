@@ -7,6 +7,7 @@ import com.znvks.salon.entity.Condition;
 import com.znvks.salon.entity.Form;
 import com.znvks.salon.entity.Service;
 import com.znvks.salon.entity.account.User;
+import com.znvks.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -27,6 +28,8 @@ public class FormDaoTest {
     @Before
     public void initDb() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        TestDataImporter.getInstance().importTestData(sessionFactory);
+
     }
 
     @After
@@ -40,7 +43,7 @@ public class FormDaoTest {
             session.beginTransaction();
 
             List<Form> results = formDao.getAll(session);
-            assertThat(results, hasSize(1));
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }
@@ -50,8 +53,8 @@ public class FormDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<Form> results = formDao.getFormsByAcc(session, (User) AccountDao.getInstance().getAccByUsername(session,"user5"));
-            assertThat(results, hasSize(1));
+            List<Form> results = formDao.getFormsByAcc(session, (User) AccountDao.getInstance().getAccByUsername(session,"user1"));
+            assertThat(results, hasSize(2));
             session.getTransaction().commit();
         }
     }
@@ -62,7 +65,7 @@ public class FormDaoTest {
             session.beginTransaction();
 
             List<Form> results = formDao.getFormsByCondition(session, Condition.WAITING);
-            assertThat(results, hasSize(1));
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }

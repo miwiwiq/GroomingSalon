@@ -6,6 +6,7 @@ import com.znvks.salon.dao.PetDao;
 import com.znvks.salon.dao.ServiceDao;
 import com.znvks.salon.entity.Pet;
 import com.znvks.salon.entity.Service;
+import com.znvks.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -26,6 +27,8 @@ public class ServiceDaoTest {
     @Before
     public void initDb() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        TestDataImporter.getInstance().importTestData(sessionFactory);
+
     }
 
     @After
@@ -39,7 +42,7 @@ public class ServiceDaoTest {
             session.beginTransaction();
 
             List<Service> results = serviceDao.getAll(session);
-            assertThat(results, hasSize(2));
+            assertThat(results, hasSize(5));
             session.getTransaction().commit();
         }
     }
@@ -52,8 +55,8 @@ public class ServiceDaoTest {
             List<Service> results = serviceDao.getServiceByForm(
                     session, FormDao.getInstance().getFormsByAcc(
                             session, AccountDao.getInstance().getAccByUsername(
-                                    session,"user5")).get(0));
-            assertThat(results, hasSize(2));
+                                    session,"user1")).get(0));
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }
@@ -64,7 +67,7 @@ public class ServiceDaoTest {
             session.beginTransaction();
 
             List<Service> results = serviceDao.getServiceByName(session, "service4");
-            assertThat(results, hasSize(1));
+            assertThat(results, hasSize(2));
             session.getTransaction().commit();
         }
     }
@@ -74,8 +77,8 @@ public class ServiceDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<Service> results = serviceDao.getServiceByDuration(session, 25);
-            assertThat(results, hasSize(2));
+            List<Service> results = serviceDao.getServiceByDuration(session, 17);
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }
@@ -85,8 +88,8 @@ public class ServiceDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<Service> results = serviceDao.getServiceByPrice(session, 15.9);
-            assertThat(results, hasSize(2));
+            List<Service> results = serviceDao.getServiceByPrice(session, 15);
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }

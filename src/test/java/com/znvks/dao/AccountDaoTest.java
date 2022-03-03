@@ -1,11 +1,10 @@
 package com.znvks.dao;
 
 import com.znvks.salon.dao.AccountDao;
-import com.znvks.salon.entity.Kind;
-import com.znvks.salon.entity.Pet;
 import com.znvks.salon.entity.account.Account;
 import com.znvks.salon.entity.account.Admin;
 import com.znvks.salon.entity.account.User;
+import com.znvks.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -15,7 +14,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -28,6 +26,7 @@ public class AccountDaoTest {
     @Before
     public void initDb() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        TestDataImporter.getInstance().importTestData(sessionFactory);
     }
 
     @After
@@ -41,7 +40,7 @@ public class AccountDaoTest {
             session.beginTransaction();
 
             List<Account> results = accountDao.getAll(session);
-            assertThat(results, hasSize(2));
+            assertThat(results, hasSize(5));
             session.getTransaction().commit();
         }
     }
@@ -52,7 +51,7 @@ public class AccountDaoTest {
             session.beginTransaction();
 
             List<User> results = accountDao.getAllUsers(session);
-            assertThat(results, hasSize(4));
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }
@@ -63,7 +62,7 @@ public class AccountDaoTest {
             session.beginTransaction();
 
             List<Admin> results = accountDao.getAllAdmins(session);
-            assertThat(results, hasSize(1));
+            assertThat(results, hasSize(2));
             session.getTransaction().commit();
         }
     }
@@ -85,8 +84,8 @@ public class AccountDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<User> results = accountDao.getAccByName(session, "name");
-            assertThat(results, hasSize(3));
+            List<User> results = accountDao.getAccByName(session, "user1name");
+            assertThat(results, hasSize(1));
             session.getTransaction().commit();
         }
     }
@@ -96,31 +95,10 @@ public class AccountDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<User> results = accountDao.getAccBySurname(session, "surname");
-            assertThat(results, hasSize(3));
+            List<User> results = accountDao.getAccBySurname(session, "user2surname");
+            assertThat(results, hasSize(2));
             session.getTransaction().commit();
         }
     }
 
-    @Test
-    public void testAdd() {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            User user = User.builder()
-                    .username("user6")
-                    .password("qwe")
-                    .name("name")
-                    .surname("surname")
-                    .phoneNumber("12134")
-                    .email("ewmc@gmail.com")
-                    .build();
-            accountDao.add(session, user);
-            session.getTransaction().commit();
-            session.beginTransaction();
-            Account result = accountDao.getAccByUsername(session, "user6");
-            String password = result.getPassword();
-            assertThat(password, containsString("qwe"));
-            session.getTransaction().commit();
-        }
-    }
 }

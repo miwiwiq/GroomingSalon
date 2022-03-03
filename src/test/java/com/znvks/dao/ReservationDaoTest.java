@@ -10,6 +10,7 @@ import com.znvks.salon.entity.Pet;
 import com.znvks.salon.entity.Reservation;
 import com.znvks.salon.entity.Service;
 import com.znvks.salon.entity.account.User;
+import com.znvks.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -32,6 +33,8 @@ public class ReservationDaoTest {
     @Before
     public void initDb() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
+        TestDataImporter.getInstance().importTestData(sessionFactory);
+
     }
 
     @After
@@ -45,7 +48,7 @@ public class ReservationDaoTest {
             session.beginTransaction();
 
             List<Reservation> results = reservationDao.getAll(session);
-            assertThat(results, hasSize(1));
+            assertThat(results, hasSize(3));
             session.getTransaction().commit();
         }
     }
@@ -58,7 +61,7 @@ public class ReservationDaoTest {
             List<Reservation> results = reservationDao.getOrdersByForm(
                     session, FormDao.getInstance().getFormsByAcc(
                             session, AccountDao.getInstance().getAccByUsername(
-                                    session,"user5")).get(0));
+                                    session,"user1")).get(0));
             assertThat(results, hasSize(1));
             session.getTransaction().commit();
         }
@@ -69,31 +72,10 @@ public class ReservationDaoTest {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            List<Reservation> results = reservationDao.getOrdersByAcc(session, AccountDao.getInstance().getAccByUsername(session,"user5"));
-            assertThat(results, hasSize(1));
+            List<Reservation> results = reservationDao.getOrdersByAcc(session, AccountDao.getInstance().getAccByUsername(session,"user1"));
+            assertThat(results, hasSize(2));
             session.getTransaction().commit();
         }
     }
 
-    @Test
-    public void testAdd() {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            Reservation reservation = Reservation
-                    .builder()
-                    .form(FormDao.getInstance().getFormsByAcc(
-                            session, AccountDao.getInstance().getAccByUsername(
-                                    session,"user5")).get(0))
-                    .date(LocalDate.now())
-                    .time(LocalTime.now())
-                    .build();
-
-            reservationDao.add(session, reservation);
-            session.getTransaction().commit();
-            session.beginTransaction();
-            List<Reservation> results = reservationDao.getAll(session);
-            assertThat(results, hasSize(1));
-            session.getTransaction().commit();
-        }
-    }
 }
