@@ -1,44 +1,26 @@
-package com.znvks.salon.dao;
+package com.znvks.salon.dao.impl;
 
+import com.znvks.salon.dao.ServiceDAO;
 import com.znvks.salon.entity.Form;
 import com.znvks.salon.entity.Form_;
-import com.znvks.salon.entity.Kind;
-import com.znvks.salon.entity.Kind_;
-import com.znvks.salon.entity.Pet;
-import com.znvks.salon.entity.Pet_;
-import com.znvks.salon.entity.Reservation;
 import com.znvks.salon.entity.Service;
 import com.znvks.salon.entity.Service_;
-import com.znvks.salon.entity.account.Account;
-import com.znvks.salon.entity.account.Account_;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.Cleanup;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ServiceDao {
+@Repository
+public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements ServiceDAO {
 
-    private static final ServiceDao INSTANCE = new ServiceDao();
-
-    public static ServiceDao getInstance() {
-        return INSTANCE;
-    }
-
-    public List<Service> getAll(Session session) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
-        Root<Service> root = criteria.from(Service.class);
-        return session.createQuery(criteria).getResultList();
-    }
-
-    public List<Service> getServiceByForm(Session session, Form form) {
+    @Override
+    public List<Service> getServiceByForm(Form form) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Form> root = criteria.from(Form.class);
@@ -47,7 +29,9 @@ public final class ServiceDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    public List<Service> getServiceByName(Session session, String name) {
+    @Override
+    public List<Service> getServiceByName(String name) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
@@ -55,7 +39,9 @@ public final class ServiceDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    public List<Service> getServiceByDuration(Session session, int duration) {
+    @Override
+    public List<Service> getServiceByDuration(int duration) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
@@ -63,24 +49,14 @@ public final class ServiceDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    public List<Service> getServiceByPrice(Session session, double price) {
+    @Override
+    public List<Service> getServiceByPrice(double price) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
         criteria.select(root).where(cb.lessThanOrEqualTo(root.get(Service_.price), price));
         return session.createQuery(criteria).getResultList();
-    }
-
-    public void add(Session session, Service service) {
-        session.save(service);
-    }
-
-    public void update(Session session, Service service){
-        session.merge(service);
-    }
-
-    public void delete(Session session, Service service){
-        session.delete(service);
     }
 
 }

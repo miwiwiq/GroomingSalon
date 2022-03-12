@@ -1,17 +1,16 @@
-package com.znvks.salon.dao;
+package com.znvks.salon.dao.impl;
 
-import com.znvks.salon.entity.Form;
+import com.znvks.salon.dao.PetDAO;
 import com.znvks.salon.entity.Kind;
 import com.znvks.salon.entity.Kind_;
 import com.znvks.salon.entity.Pet;
 import com.znvks.salon.entity.Pet_;
-import com.znvks.salon.entity.account.Account;
 import com.znvks.salon.entity.account.Account_;
 import com.znvks.salon.entity.account.User;
 import com.znvks.salon.entity.account.User_;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.Cleanup;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,25 +19,12 @@ import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PetDao {
+@Repository
+public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
 
-    private static final PetDao INSTANCE = new PetDao();
-
-    public static PetDao getInstance() {
-        return INSTANCE;
-    }
-
-    public List<Pet> getAll(Session session) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Pet> criteria = cb.createQuery(Pet.class);
-        Root<Pet> root = criteria.from(Pet.class);
-        root.join(Pet_.kind);
-        root.join(Pet_.user);
-        return session.createQuery(criteria).getResultList();
-    }
-
-    public List<Pet> getPetsByAcc(Session session, User user) {
+    @Override
+    public List<Pet> getPetsByAcc(User user) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Pet> criteria = cb.createQuery(Pet.class);
         Root<User> root = criteria.from(User.class);
@@ -48,7 +34,9 @@ public final class PetDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    public List<Pet> getPetByKind(Session session, String kind) {
+    @Override
+    public List<Pet> getPetByKind(String kind) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Pet> criteria = cb.createQuery(Pet.class);
         Root<Pet> root = criteria.from(Pet.class);
@@ -58,7 +46,9 @@ public final class PetDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    public List<Pet> getPetByName(Session session, String name) {
+    @Override
+    public List<Pet> getPetByName(String name) {
+        Session session = getSessionFactory().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Pet> criteria = cb.createQuery(Pet.class);
         Root<Pet> root = criteria.from(Pet.class);
@@ -66,28 +56,24 @@ public final class PetDao {
         return session.createQuery(criteria).getResultList();
     }
 
-    private boolean isKindNotExist(Session session, Kind kind) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Kind> criteria = cb.createQuery(Kind.class);
-        Root<Kind> root = criteria.from(Kind.class);
-        criteria.select(root).where(cb.equal(root.get(Kind_.kind), kind.getKind().toLowerCase()));
-        return session.createQuery(criteria).getResultList().isEmpty();
-    }
+//    public Kind checkKind(Session session, Kind kind) {
+//        CriteriaBuilder cb = session.getCriteriaBuilder();
+//        CriteriaQuery<Kind> criteria = cb.createQuery(Kind.class);
+//        Root<Kind> root = criteria.from(Kind.class);
+//        criteria.select(root).where(cb.equal(root.get(Kind_.kind), kind.getKind().toLowerCase()));
+//        if (Objects.nonNull(session.createQuery(criteria).getResultList().get(0))) {
+//            kind = session.createQuery(criteria).getSingleResult();
+//        } else {
+//            session.save(kind);
+//        }
+//        return kind;
+//    }
 
-    public void add(Session session, Pet pet) {
-        if (isKindNotExist(session, pet.getKind())) {
-            session.save(pet.getKind());
-        }
-        session.save(pet);
-    }
-
-    public void update(Session session, Pet pet){
-        session.merge(pet);
-    }
-
-    public void delete(Session session, Pet pet){
-        session.delete(pet);
-    }
+//    public void save(Session session, Pet pet) {
+//        pet.setKind(checkKind(session, pet.getKind()));
+//        session.save(pet);
+//    }
+//
 
 
 }

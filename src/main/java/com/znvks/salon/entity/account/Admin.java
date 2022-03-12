@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Entity
 @DiscriminatorValue("admin")
 @Table(schema = "hibernate_demo")
