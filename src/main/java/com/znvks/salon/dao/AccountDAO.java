@@ -20,4 +20,5 @@ public interface AccountDAO extends BaseDAO<Long, Account> {
     List<User> getAccBySurname(String surname);
 
     boolean isAuthenticate(Account account);
+
 }

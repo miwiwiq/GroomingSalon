@@ -56,24 +56,8 @@ public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
         return session.createQuery(criteria).getResultList();
     }
 
-//    public Kind checkKind(Session session, Kind kind) {
-//        CriteriaBuilder cb = session.getCriteriaBuilder();
-//        CriteriaQuery<Kind> criteria = cb.createQuery(Kind.class);
-//        Root<Kind> root = criteria.from(Kind.class);
-//        criteria.select(root).where(cb.equal(root.get(Kind_.kind), kind.getKind().toLowerCase()));
-//        if (Objects.nonNull(session.createQuery(criteria).getResultList().get(0))) {
-//            kind = session.createQuery(criteria).getSingleResult();
-//        } else {
-//            session.save(kind);
-//        }
-//        return kind;
-//    }
-
-//    public void save(Session session, Pet pet) {
-//        pet.setKind(checkKind(session, pet.getKind()));
-//        session.save(pet);
-//    }
-//
-
+    public void save(Session session, Pet pet) {
+        session.save(pet);
+    }
 
 }
