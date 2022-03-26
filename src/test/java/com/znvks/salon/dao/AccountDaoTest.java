@@ -14,11 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @ExtendWith(SpringExtension.class)
@@ -36,7 +41,7 @@ class AccountDaoTest {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterEach
+    @AfterTestMethod
     public void finish() {
         sessionFactory.close();
     }
@@ -86,4 +91,30 @@ class AccountDaoTest {
         MatcherAssert.assertThat(results, Matchers.hasSize(2));
     }
 
+    @Test
+    void save() {
+        User user = User.builder().username("kto").password("ya").role("user").build();
+        Long id = accountDao.save(user);
+        Optional<Account> acc = accountDao.getById(id);
+        assertTrue(acc.isPresent());
+    }
+
+    @Test
+    void update() {
+        Optional<Account> optional = accountDao.getById(3L);
+        optional.ifPresent(acc -> {
+            acc.setPassword("lll");
+            accountDao.update(acc);
+        });
+        Optional<Account> acc = accountDao.getById(3L);
+        acc.ifPresent(a -> assertEquals("lll", a.getPassword()));
+    }
+
+    @Test
+    void delete() {
+        Optional<Account> optional = accountDao.getById(1L);
+        optional.ifPresent(acc -> accountDao.delete(acc));
+        Optional<Account> byId = accountDao.getById(1L);
+        assertFalse(byId.isPresent());
+    }
 }

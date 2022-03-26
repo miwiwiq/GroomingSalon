@@ -1,6 +1,7 @@
 package com.znvks.salon.dao;
 
 import com.znvks.salon.config.DbConfigTest;
+import com.znvks.salon.dto.ServiceDTO;
 import com.znvks.salon.entity.Service;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
@@ -18,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DbConfigTest.class)
@@ -38,7 +43,7 @@ class ServiceDAOImplTest {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterEach
+    @AfterTestMethod
     public void finish() {
         sessionFactory.close();
     }
@@ -77,5 +82,32 @@ class ServiceDAOImplTest {
     void testFindByPrice() {
         List<Service> results = serviceDAO.getServiceByPrice(15);
         MatcherAssert.assertThat(results, Matchers.hasSize(3));
+    }
+
+    @Test
+    void save() {
+        Service service = Service.builder().duration(10).name("frgh").price(15).build();
+        Long id = serviceDAO.save(service);
+        Optional<Service> byId = serviceDAO.getById(id);
+        assertTrue(byId.isPresent());
+    }
+
+    @Test
+    void update() {
+        Optional<Service> optional = serviceDAO.getById(1L);
+        optional.ifPresent(r -> {
+            r.setName("qqqqqq");
+            serviceDAO.update(r);
+        });
+        Optional<Service> r = serviceDAO.getById(1L);
+        r.ifPresent(p -> assertEquals("qqqqqq", p.getName()));
+    }
+
+    @Test
+    void delete() {
+        Optional<Service> optional = serviceDAO.getById(1L);
+        optional.ifPresent(r -> serviceDAO.delete(r));
+        Optional<Service> byId = serviceDAO.getById(1L);
+        assertFalse(byId.isPresent());
     }
 }
