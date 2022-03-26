@@ -1,9 +1,11 @@
 package com.znvks.salon.service.impl;
 
 import com.znvks.salon.dao.ServiceDAO;
+import com.znvks.salon.dto.FormDTO;
 import com.znvks.salon.dto.ServiceDTO;
 import com.znvks.salon.entity.Form;
 import com.znvks.salon.entity.Service;
+import com.znvks.salon.mapper.FormMapper;
 import com.znvks.salon.mapper.ServiceMapper;
 import com.znvks.salon.service.ServiceService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,11 @@ public class ServiceServiceImpl implements ServiceService {
 
     private final ServiceDAO serviceDAO;
     private final ServiceMapper serviceMapper;
+    private final FormMapper formMapper;
 
     @Override
-    public List<ServiceDTO> getServiceByForm(Form form) {
-        List<Service> services = serviceDAO.getServiceByForm(form);
+    public List<ServiceDTO> getServiceByForm(FormDTO form) {
+        List<Service> services = serviceDAO.getServiceByForm(formMapper.mapToEntity(form));
         return serviceMapper.mapToListDto(services);
     }
 
@@ -53,17 +56,21 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public Long save(Service service) {
-        return serviceDAO.save(service);
+    @Transactional
+    public Long save(ServiceDTO service) {
+        return serviceDAO.save(serviceMapper.mapToEntity(service));
     }
 
     @Override
-    public void update(Service service) {
-        serviceDAO.update(service);
+    @Transactional
+    public void update(ServiceDTO service) {
+        serviceDAO.update(serviceMapper.mapToEntity(service));
     }
 
     @Override
-    public void delete(Service service) {
+    @Transactional
+    public void delete(ServiceDTO serviceDTO) {
+        Service service = serviceDAO.getById(serviceDTO.getId()).orElse(null);
         serviceDAO.delete(service);
     }
 

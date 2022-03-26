@@ -1,13 +1,7 @@
 package com.znvks.salon.service;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.dao.AccountDAO;
-import com.znvks.salon.dao.PetDAO;
-import com.znvks.salon.dto.AccountDTO;
 import com.znvks.salon.dto.PetDTO;
-import com.znvks.salon.entity.Kind;
-import com.znvks.salon.entity.Pet;
-import com.znvks.salon.entity.account.User;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -25,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -37,9 +32,7 @@ class TestPetService {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private AccountDAO accountDAO;
-    @Autowired
-    private PetDAO petDAO;
+    private AccountService accountService;
 
     @BeforeEach
     public void initDb() {
@@ -67,22 +60,47 @@ class TestPetService {
     }
 
     @Test
-    void save(){
-        Pet pet = Pet.builder().name("fgh").kind(Kind.builder().kind("cat").build()).user( (User) accountDAO.getAccByUsername("user2").get()).build();
+    void testFindByAcc() {
+        List<PetDTO> results = petService.getPetsByAcc(accountService.getAccByUsername("user2").get());
+        MatcherAssert.assertThat(results, Matchers.hasSize(2));
+    }
+
+    @Test
+    void testFindByName() {
+        List<PetDTO> results = petService.getPetByName("name3");
+        MatcherAssert.assertThat(results, Matchers.hasSize(2));
+    }
+
+    @Test
+    void testFindByKind() {
+        List<PetDTO> results = petService.getPetByKind("cat");
+        MatcherAssert.assertThat(results, Matchers.hasSize(2));
+    }
+
+    @Test
+    void save() {
+        PetDTO pet = PetDTO.builder().name("cat").kind("mwce").user(accountService.getAccByUsername("user1").get()).build();
         Long id = petService.save(pet);
         Optional<PetDTO> petById = petService.getById(id);
         assertTrue(petById.isPresent());
-        petService.delete(pet);
     }
-//
-//    @Test
-//    void update() {
-//        Optional<Pet> byId = petDao.findById(1L);
-//        byId.ifPresent(book -> {
-//            book.setName("Последнее желание");
-//            bookDao.update(book);
-//        });
-//        Optional<Book> updatedBook = bookDao.findById(1L);
-//        updatedBook.ifPresent(book -> assertEquals("Последнее желание", book.getName()));
-//    }
+
+    @Test
+    void update() {
+        Optional<PetDTO> optional = petService.getById(1L);
+        optional.ifPresent(pet -> {
+            pet.setName("qqq");
+            petService.update(pet);
+        });
+        Optional<PetDTO> petById = petService.getById(1L);
+        petById.ifPresent(p -> assertEquals("qqq", p.getName()));
+    }
+
+    @Test
+    void delete() {
+        Optional<PetDTO> optional = petService.getById(1L);
+        optional.ifPresent(pet -> petService.delete(pet));
+        Optional<PetDTO> byId = petService.getById(1L);
+        assertFalse(byId.isPresent());
+    }
 }

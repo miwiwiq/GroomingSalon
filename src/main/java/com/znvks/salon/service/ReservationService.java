@@ -1,5 +1,6 @@
 package com.znvks.salon.service;
 
+import com.znvks.salon.dto.AccountDTO;
 import com.znvks.salon.dto.FormDTO;
 import com.znvks.salon.dto.PetDTO;
 import com.znvks.salon.dto.ReservationDTO;
@@ -11,9 +12,9 @@ import com.znvks.salon.entity.account.Account;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReservationService extends BaseService<ReservationDTO, Reservation>{
+public interface ReservationService extends BaseService<ReservationDTO>{
 
-    List<ReservationDTO> getOrdersByAcc(Account account);
+    List<ReservationDTO> getOrdersByAcc(AccountDTO account);
 
-    Optional<ReservationDTO> getOrdersByForm(Form form);
+    Optional<ReservationDTO> getOrdersByForm(FormDTO form);
 }

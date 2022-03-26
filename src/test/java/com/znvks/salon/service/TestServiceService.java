@@ -2,13 +2,16 @@ package com.znvks.salon.service;
 
 import com.znvks.salon.config.DbConfigTest;
 import com.znvks.salon.dao.ServiceDAO;
+import com.znvks.salon.dto.ReservationDTO;
 import com.znvks.salon.dto.ServiceDTO;
+import com.znvks.salon.entity.Condition;
 import com.znvks.salon.entity.Service;
 import com.znvks.salon.mapper.ServiceMapper;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,22 +21,25 @@ import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DbConfigTest.class)
 @Transactional
- class TestServiceService {
+class TestServiceService {
 
     @Autowired
     private ServiceService serviceService;
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ServiceMapper serviceMapper;
+    private FormService formService;
 
     @BeforeEach
     public void initDb() {
@@ -58,11 +64,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         serviceById.ifPresent(service -> MatcherAssert.assertThat(serviceById.get().getName(), Matchers.containsString("service1")));
     }
 
-//    @Test
-//    void testFindByForm() {
-//        List<Service> results = serviceService.getServiceByForm(formDAO.getFormsByAcc(accountDAO.getAccByUsername("user1").get()).get(0));
-//        MatcherAssert.assertThat(results, Matchers.hasSize(3));
-//    }
+    @Test
+    void testFindByForm() {
+        List<ServiceDTO> results = serviceService.getServiceByForm(formService.getFormsByCondition(Condition.WAITING).get(0));
+        MatcherAssert.assertThat(results, Matchers.hasSize(3));
+    }
 
     @Test
     void testFindByName() {
@@ -83,18 +89,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     }
 
     @Test
+    void save() {
+        ServiceDTO serviceDTO = ServiceDTO.builder().duration(10).name("frgh").price(15).build();
+        Long id = serviceService.save(serviceDTO);
+        Optional<ServiceDTO> byId = serviceService.getById(id);
+        assertTrue(byId.isPresent());
+    }
+
+    @Test
     void update() {
-        Optional<ServiceDTO> optionalServiceDTO = serviceService.getById(4L);
-        if (optionalServiceDTO.isPresent()){
-           ServiceDTO serviceDTO = optionalServiceDTO.get();
-           serviceDTO.setName("service100");
-           Service serv = serviceMapper.toEntity(serviceDTO);
-           serv.setId(serviceDTO.getId());
-           serviceService.update(serv);
-            Optional<ServiceDTO> updated = serviceService.getById(4L);
-            updated.ifPresent(s -> MatcherAssert.assertThat(
-                    s.getName(), Matchers.containsString("service1000")));
-        }
+        Optional<ServiceDTO> optional = serviceService.getById(1L);
+        optional.ifPresent(r -> {
+            r.setName("qqqqqq");
+            serviceService.update(r);
+        });
+        Optional<ServiceDTO> r = serviceService.getById(1L);
+        r.ifPresent(p -> assertEquals("qqqqqq", p.getName()));
+    }
+
+    @Test
+    void delete() {
+        Optional<ServiceDTO> optional = serviceService.getById(1L);
+        optional.ifPresent(r -> serviceService.delete(r));
+        Optional<ServiceDTO> byId = serviceService.getById(1L);
+        assertFalse(byId.isPresent());
     }
 
 }

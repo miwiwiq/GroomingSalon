@@ -6,15 +6,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseService<DTO, E> {
+public interface BaseService<DTO> {
 
     Optional<DTO> getById(Long id);
 
-    Long save(E entity);
+    Long save(DTO entity);
 
-    void update(E entity);
+    void update(DTO entity);
 
-    void delete(E entity);
+    void delete(DTO entity);
 
     List<DTO> getAll();
 

@@ -4,11 +4,16 @@ import com.znvks.salon.config.DbConfigTest;
 import com.znvks.salon.dao.FormDAO;
 import com.znvks.salon.dao.ReservationDAO;
 import com.znvks.salon.dto.FormDTO;
+import com.znvks.salon.dto.PetDTO;
 import com.znvks.salon.dto.ReservationDTO;
+import com.znvks.salon.entity.Condition;
+import com.znvks.salon.entity.Reservation;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +23,13 @@ import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DbConfigTest.class)
@@ -33,7 +41,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ReservationDAO reservationDAO;
+    private FormService formService;
+    @Autowired
+    private AccountService accountService;
 
     @BeforeEach
     public void initDb() {
@@ -58,5 +68,45 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         System.out.println(reservations);
         reservations.ifPresent(r -> MatcherAssert.assertThat(
                 r.getForm().getPet().getName(), Matchers.containsString("name1")));
+    }
+
+    @Test
+    void testFindByForm() {
+        Optional<ReservationDTO> results = reservationService.getOrdersByForm(
+                formService.getFormsByCondition(Condition.WAITING).get(0));
+        Assertions.assertNotNull(results.get());
+    }
+
+    @Test
+    void testFindByAcc() {
+        List<ReservationDTO> results = reservationService.getOrdersByAcc(accountService.getAccByUsername("user1").get());
+        MatcherAssert.assertThat(results, Matchers.hasSize(2));
+    }
+
+    @Test
+    void save() {
+        ReservationDTO reservationDTO = ReservationDTO.builder().date(LocalDate.now()).form(formService.getFormsByCondition(Condition.WAITING).get(0)).rating(5).build();
+        Long id = reservationService.save(reservationDTO);
+        Optional<ReservationDTO> byId = reservationService.getById(id);
+        assertTrue(byId.isPresent());
+    }
+
+    @Test
+    void update() {
+        Optional<ReservationDTO> optional = reservationService.getById(1L);
+        optional.ifPresent(r -> {
+            r.setRating(1);
+            reservationService.update(r);
+        });
+        Optional<ReservationDTO> r = reservationService.getById(1L);
+        r.ifPresent(p -> assertEquals(1, p.getRating()));
+    }
+
+    @Test
+    void delete() {
+        Optional<ReservationDTO> optional = reservationService.getById(1L);
+        optional.ifPresent(r -> reservationService.delete(r));
+        Optional<ReservationDTO> byId = reservationService.getById(1L);
+        assertFalse(byId.isPresent());
     }
 }

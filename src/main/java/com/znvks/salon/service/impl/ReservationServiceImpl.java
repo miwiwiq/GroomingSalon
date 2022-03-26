@@ -2,11 +2,14 @@ package com.znvks.salon.service.impl;
 
 import com.znvks.salon.dao.FormDAO;
 import com.znvks.salon.dao.ReservationDAO;
+import com.znvks.salon.dto.AccountDTO;
+import com.znvks.salon.dto.FormDTO;
 import com.znvks.salon.dto.ReservationDTO;
 import com.znvks.salon.entity.Form;
 import com.znvks.salon.entity.Pet;
 import com.znvks.salon.entity.Reservation;
 import com.znvks.salon.entity.account.Account;
+import com.znvks.salon.mapper.AccountMapper;
 import com.znvks.salon.mapper.FormMapper;
 import com.znvks.salon.mapper.ReservationMapper;
 import com.znvks.salon.service.ReservationService;
@@ -25,6 +28,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationDAO reservationDAO;
     private final ReservationMapper reservationMapper;
+    private final FormMapper formMapper;
+    private final AccountMapper accountMapper;
 
     @Override
     public Optional<ReservationDTO> getById(Long id) {
@@ -33,17 +38,21 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Long save(Reservation reservation) {
-        return reservationDAO.save(reservation);
+    @Transactional
+    public Long save(ReservationDTO reservation) {
+        return reservationDAO.save(reservationMapper.mapToEntity(reservation));
     }
 
     @Override
-    public void update(Reservation reservation) {
-        reservationDAO.update(reservation);
+    @Transactional
+    public void update(ReservationDTO reservation) {
+        reservationDAO.update(reservationMapper.mapToEntity(reservation));
     }
 
     @Override
-    public void delete(Reservation reservation) {
+    @Transactional
+    public void delete(ReservationDTO reservationDTO) {
+        Reservation reservation = reservationDAO.getById(reservationDTO.getId()).orElse(null);
         reservationDAO.delete(reservation);
     }
 
@@ -54,14 +63,14 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDTO> getOrdersByAcc(Account account) {
-        List<Reservation> reservations = reservationDAO.getOrdersByAcc(account);
+    public List<ReservationDTO> getOrdersByAcc(AccountDTO account) {
+        List<Reservation> reservations = reservationDAO.getOrdersByAcc(accountMapper.mapToEntity(account));
         return reservationMapper.mapToListDto(reservations);
     }
 
     @Override
-    public Optional<ReservationDTO> getOrdersByForm(Form form) {
-        Optional<Reservation> reservation = reservationDAO.getOrdersByForm(form);
+    public Optional<ReservationDTO> getOrdersByForm(FormDTO form) {
+        Optional<Reservation> reservation = reservationDAO.getOrdersByForm(formMapper.mapToEntity(form));
         return Optional.ofNullable(reservationMapper.mapToDto(reservation.orElse(null)));
     }
 }

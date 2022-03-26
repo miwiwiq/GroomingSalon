@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -44,13 +45,18 @@ public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<
     @Override
     public void update(E entity) {
         Session session = sessionFactory.getCurrentSession();
-        session.update(entity);
+        session.merge(entity);
     }
 
     @Override
     public void delete(E entity) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(entity);
+        if (Objects.nonNull(entity)) {
+            Session session = sessionFactory.getCurrentSession();
+            Object persistentInstance = session.load(clazz, entity.getId());
+            if (persistentInstance != null) {
+                session.delete(persistentInstance);
+            }
+        }
     }
 
     @Override

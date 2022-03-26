@@ -32,18 +32,22 @@ public class AccountServiceImpl implements AccountService {
         return Optional.ofNullable(accountMapper.mapToDto(account.orElse(null)));
     }
 
+    @Override
     @Transactional
-    public Long save(Account account) {
-        return accountDAO.save(account);
+    public Long save(AccountDTO accountDTO) {
+        return accountDAO.save(accountMapper.mapToEntity(accountDTO));
     }
 
     @Override
-    public void update(Account account) {
-        accountDAO.update(account);
+    @Transactional
+    public void update(AccountDTO accountDTO) {
+        accountDAO.update(accountMapper.mapToEntity(accountDTO));
     }
 
     @Override
-    public void delete(Account account) {
+    @Transactional
+    public void delete(AccountDTO accountDTO) {
+        Account account = accountDAO.getById(accountDTO.getId()).orElse(null);
         accountDAO.delete(account);
     }
 
@@ -84,8 +88,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean isAuthenticate(Account account) {
-        return accountDAO.isAuthenticate(account);
+    public boolean isAuthenticate(AccountDTO accountDTO) {
+        return accountDAO.isAuthenticate(accountMapper.mapToEntity(accountDTO));
     }
 
 }

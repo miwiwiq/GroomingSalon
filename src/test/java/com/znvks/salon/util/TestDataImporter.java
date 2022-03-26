@@ -50,6 +50,7 @@ public final class TestDataImporter {
         Form form1 = saveForm(session, Condition.WAITING, pet1, services);
         Form form2 = saveForm(session, Condition.WAITING, pet2, services);
         Form form3 = saveForm(session, Condition.WAITING, pet5, services);
+        Form form4 = saveForm(session, Condition.WAITING, pet5, services);
 
         saveReservation(session, form1, LocalDate.now(), 15, 3, LocalTime.now());
         saveReservation(session, form2, LocalDate.now(), 20, 5, LocalTime.now());
@@ -58,13 +59,13 @@ public final class TestDataImporter {
     }
 
     private static Admin saveAdmin(Session session, String username, String password, Level level) {
-        Admin admin = new Admin(username, password, level);
+        Admin admin = new Admin(username, password,"admin", level);
         session.save(admin);
         return admin;
     }
 
     private static User saveUser(Session session, String username, String password, String name, String surname, String phone, String email) {
-        User user = new User(username, password, name, surname, phone, email, null);
+        User user = new User(username, password,"user", name, surname, phone, email, null);
         session.save(user);
         return user;
     }
