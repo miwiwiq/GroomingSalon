@@ -11,9 +11,9 @@ import com.znvks.salon.entity.account.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface PetService extends BaseService<PetDTO, Pet> {
+public interface PetService extends BaseService<PetDTO> {
 
-    List<PetDTO> getPetsByAcc(User user);
+    List<PetDTO> getPetsByAcc(AccountDTO user);
 
     List<PetDTO> getPetByKind(String kind);
 

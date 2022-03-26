@@ -32,9 +32,9 @@ public class Admin extends Account {
     private Level level;
 
     @Builder
-    public Admin(String username, String password, Level level) {
-        super(username, password);
-        this.level=level;
+    public Admin(String username, String password, String role, Level level) {
+        super(username, password, role);
+        this.level = level;
     }
 
 }

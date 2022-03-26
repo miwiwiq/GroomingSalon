@@ -43,8 +43,8 @@ public class User extends Account {
     private List<Pet> pets = new ArrayList<>();
 
     @Builder
-    public User(String username, String password, String name, String surname, String phoneNumber, String email, List<Pet> pets) {
-        super(username, password);
+    public User(String username, String password, String role, String name, String surname, String phoneNumber, String email, List<Pet> pets) {
+        super(username, password, role);
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;

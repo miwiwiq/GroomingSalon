@@ -11,9 +11,9 @@ import com.znvks.salon.entity.account.Account;
 import java.util.List;
 import java.util.Optional;
 
-public interface FormService extends BaseService<FormDTO, Form>{
+public interface FormService extends BaseService<FormDTO>{
 
-    List<FormDTO> getFormsByAcc(Account account);
+    List<FormDTO> getFormsByAcc(AccountDTO account);
 
     List<FormDTO> getFormsByCondition(Condition condition);
 }

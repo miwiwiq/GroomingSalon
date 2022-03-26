@@ -11,7 +11,7 @@ import com.znvks.salon.entity.account.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface AccountService extends BaseService<AccountDTO, Account> {
+public interface AccountService extends BaseService<AccountDTO> {
 
     List<AccountDTO> getAllUsers();
 
@@ -23,6 +23,6 @@ public interface AccountService extends BaseService<AccountDTO, Account> {
 
     List<AccountDTO> getAccBySurname(String surname);
 
-    boolean isAuthenticate(Account account);
+    boolean isAuthenticate(AccountDTO account);
 
 }

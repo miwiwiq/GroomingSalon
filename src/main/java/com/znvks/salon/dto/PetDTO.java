@@ -21,5 +21,5 @@ public class PetDTO implements Serializable {
     private String name;
     private String kind;
     @ToString.Exclude
-    private AccountDTO account;
+    private AccountDTO user;
 }

@@ -2,6 +2,7 @@ package com.znvks.salon.service.impl;
 
 import com.znvks.salon.dao.AccountDAO;
 import com.znvks.salon.dao.FormDAO;
+import com.znvks.salon.dto.AccountDTO;
 import com.znvks.salon.dto.FormDTO;
 import com.znvks.salon.entity.Condition;
 import com.znvks.salon.entity.Form;
@@ -25,6 +26,7 @@ public class FormServiceImpl implements FormService {
 
     private final FormDAO formDAO;
     private final FormMapper formMapper;
+    private final AccountMapper accountMapper;
 
 
     @Override
@@ -34,17 +36,21 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public Long save(Form form) {
-        return formDAO.save(form);
+    @Transactional
+    public Long save(FormDTO form) {
+        return formDAO.save(formMapper.mapToEntity(form));
     }
 
     @Override
-    public void update(Form form) {
-        formDAO.update(form);
+    @Transactional
+    public void update(FormDTO form) {
+        formDAO.update(formMapper.mapToEntity(form));
     }
 
     @Override
-    public void delete(Form form) {
+    @Transactional
+    public void delete(FormDTO formDTO) {
+        Form form = formDAO.getById(formDTO.getId()).orElse(null);
         formDAO.delete(form);
     }
 
@@ -55,8 +61,8 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public List<FormDTO> getFormsByAcc(Account account) {
-        List<Form> forms = formDAO.getFormsByAcc(account);
+    public List<FormDTO> getFormsByAcc(AccountDTO account) {
+        List<Form> forms = formDAO.getFormsByAcc(accountMapper.mapToEntity(account));
         return formMapper.mapToListDto(forms);
     }
 

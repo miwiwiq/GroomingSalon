@@ -3,6 +3,7 @@ package com.znvks.salon.service.impl;
 import com.znvks.salon.dao.AccountDAO;
 import com.znvks.salon.dao.KindDAO;
 import com.znvks.salon.dao.PetDAO;
+import com.znvks.salon.dto.AccountDTO;
 import com.znvks.salon.dto.PetDTO;
 import com.znvks.salon.entity.Form;
 import com.znvks.salon.entity.Kind;
@@ -29,6 +30,7 @@ public class PetServiceImpl implements PetService {
     private final PetDAO petDAO;
     private final PetMapper petMapper;
     private final KindDAO kindDAO;
+    private final AccountMapper accountMapper;
 
 
     @Override
@@ -38,8 +40,10 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Long save(Pet pet) {
-        Optional<Kind> kind = kindDAO.getByName(pet.getKind().getKind());
+    @Transactional
+    public Long save(PetDTO petDTO) {
+        Pet pet = petMapper.mapToEntity(petDTO);
+        Optional<Kind> kind = kindDAO.getByName(petDTO.getKind());
         if (Objects.nonNull(kind) && kind.isPresent()) {
             pet.setKind(kind.get());
         } else {
@@ -49,12 +53,15 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void update(Pet pet) {
-        petDAO.update(pet);
+    @Transactional
+    public void update(PetDTO petDTO) {
+        petDAO.update(petMapper.mapToEntity(petDTO));
     }
 
     @Override
-    public void delete(Pet pet) {
+    @Transactional
+    public void delete(PetDTO petDTO) {
+        Pet pet = petDAO.getById(petDTO.getId()).orElse(null);
         petDAO.delete(pet);
     }
 
@@ -65,8 +72,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<PetDTO> getPetsByAcc(User user) {
-        List<Pet> pets = petDAO.getPetsByAcc(user);
+    public List<PetDTO> getPetsByAcc(AccountDTO accountDTO) {
+        List<Pet> pets = petDAO.getPetsByAcc( (User) accountMapper.mapToEntity(accountDTO));
         return petMapper.mapToListDto(pets);
     }
 

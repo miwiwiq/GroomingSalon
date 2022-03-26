@@ -3,12 +3,11 @@ package com.znvks.salon.dao;
 import com.znvks.salon.config.DbConfigTest;
 import com.znvks.salon.entity.Condition;
 import com.znvks.salon.entity.Form;
-import com.znvks.salon.entity.account.Account;
-import com.znvks.salon.entity.account.User;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DbConfigTest.class)
 @Transactional
@@ -30,6 +33,10 @@ class FormDAOImplTest {
     private FormDAO formDAO;
     @Autowired
     private AccountDAO accountDAO;
+    @Autowired
+    private ServiceDAO serviceDAO;
+    @Autowired
+    private PetDAO petDAO;
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -46,7 +53,7 @@ class FormDAOImplTest {
     @Test
     void testFindAll() {
         List<Form> results = formDAO.getAll();
-        MatcherAssert.assertThat(results, Matchers.hasSize(3));
+        MatcherAssert.assertThat(results, Matchers.hasSize(4));
     }
 
     @Test
@@ -67,6 +74,33 @@ class FormDAOImplTest {
     @Test
     void testFindFormsByCondition() {
         List<Form> results = formDAO.getFormsByCondition(Condition.WAITING);
-        MatcherAssert.assertThat(results, Matchers.hasSize(3));
+        MatcherAssert.assertThat(results, Matchers.hasSize(4));
+    }
+
+    @Test
+    void save() {
+        Form form = Form.builder().condition(Condition.WAITING).services(serviceDAO.getServiceByDuration(17)).pet(petDAO.getPetByName("name1").get(0)).build();
+        Long id = formDAO.save(form);
+        Optional<Form> f = formDAO.getById(id);
+        assertTrue(f.isPresent());
+    }
+
+    @Test
+    void update() {
+        Optional<Form> optional = formDAO.getById(3L);
+        optional.ifPresent(f -> {
+            f.setCondition(Condition.DECLINED);
+            formDAO.update(f);
+        });
+        Optional<Form> acc = formDAO.getById(3L);
+        acc.ifPresent(a -> assertEquals(Condition.DECLINED, a.getCondition()));
+    }
+
+    @Test
+    void delete() {
+        Optional<Form> optional = formDAO.getById(1L);
+        optional.ifPresent(f -> formDAO.delete(f));
+        Optional<Form> byId = formDAO.getById(1L);
+        assertFalse(byId.isPresent());
     }
 }
