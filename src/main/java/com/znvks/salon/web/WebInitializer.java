@@ -1,6 +1,6 @@
 package com.znvks.salon.web;
 
-import com.znvks.salon.config.DbConfig;
+import com.znvks.salon.model.config.DbConfig;
 import com.znvks.salon.web.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

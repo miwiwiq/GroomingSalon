@@ -1,21 +1,23 @@
 package com.znvks.salon.dao;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.entity.Condition;
-import com.znvks.salon.entity.Reservation;
+import com.znvks.salon.model.dao.AccountDAO;
+import com.znvks.salon.model.dao.FormDAO;
+import com.znvks.salon.model.dao.ReservationDAO;
+import com.znvks.salon.model.entity.Condition;
+import com.znvks.salon.model.entity.Reservation;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -45,7 +47,7 @@ class ReservationDAOImplTest {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTestMethod
+    @AfterTransaction
     public void finish() {
         sessionFactory.close();
     }

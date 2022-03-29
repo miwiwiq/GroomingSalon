@@ -1,7 +1,9 @@
 package com.znvks.salon.service;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.dto.PetDTO;
+import com.znvks.salon.model.dto.PetDTO;
+import com.znvks.salon.model.service.AccountService;
+import com.znvks.salon.model.service.PetService;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -11,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -39,7 +41,7 @@ class TestPetService {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTestMethod
+    @AfterTransaction
     public void finish() {
         sessionFactory.close();
     }

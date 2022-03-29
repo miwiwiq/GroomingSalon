@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+
+</head>
+<body>
+<div th:replace="/admin/adminHeader.html :: header"></div>
+<form class="form-container1" th:method="post" th:action="@{/addService}" th:object="${service}">
+
+    <input type="text" th:field="*{name}" th:placeholder="#{enter.service.name}" class="input"  required>
+
+    <input type="number" th:field="*{duration}" th:placeholder="#{enter.service.duration}" class="input"  required>
+
+    <input type="text" th:field="*{price}" th:placeholder="#{enter.service.price}" class="input"  required>
+
+    <input type="submit" class="ghost" name="submit" th:value="#{add}">
+
+</form>
+</body>
+</html>

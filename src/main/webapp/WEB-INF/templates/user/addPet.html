@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/user/userHeader.html :: header"></div>
+<form class="form-container1" th:method="post" th:action="@{/addPet}" th:object="${pet}">
+
+    <input type="text" th:field="*{name}"  th:placeholder="#{enter.pet.name}"
+           class="input" required>
+
+    <input type="text" th:field="*{kind}"  th:placeholder="#{enter.pet.kind}"
+           class="input" required >
+
+    <input type="submit" class="ghost" name="submit" th:value="#{add}">
+
+</form>
+</body>
+</html>

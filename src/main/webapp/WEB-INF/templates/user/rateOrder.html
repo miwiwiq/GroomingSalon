@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/star.css}">
+</head>
+<body>
+<div th:replace="/admin/adminHeader.html :: header"></div>
+<div class="form-container1">
+    <form th:method="post" th:action="@{/editOrder}" th:object="${ratingOrder}"
+          enctype="application/x-www-form-urlencoded">
+        <input th:field="*{id}" type="hidden" th:value="${ratingOrder.id}">
+        <input name="formId" type="hidden" th:value="${ratingOrder.form.id}">
+        <input type="text" name="pet_name" class="input" disabled th:value="${ratingOrder.form.pet.name}">
+        <input type="text" name="pet_kind" class="input" disabled th:value="${ratingOrder.form.pet.kind}">
+        <table>
+            <tr>
+                <th></th>
+                <th th:text="#{services.name}"></th>
+                <th th:text="#{services.duration}"></th>
+                <th th:text="#{services.price}"></th>
+            </tr>
+            <tr th:each="service, iterStat : ${ratingOrder.form.services}">
+                <td class="btn" th:text="${iterStat.count}"></td>
+                <td th:text="${service.name}"></td>
+                <td th:text="${service.duration}"></td>
+                <td th:text="${service.price}"></td>
+            </tr>
+        </table>
+        <input th:field="*{finalPrice}" type="text" th:value="${ratingOrder.finalPrice}">
+
+        <input th:field="*{date}" type="hidden" th:value="${ratingOrder.date}">
+        <input type="date"  th:value="${ratingOrder.date}" name="date" class="input" required disabled>
+        <input th:field="*{time}" type="hidden"  th:value="${ratingOrder.time}">
+        <input type="time"  th:value="${ratingOrder.time}" name="time" class="input" required disabled>
+
+        <div class="rating">
+            <input th:field="*{rating}" th:value="1" name="stars" id="e5" type="radio"></a><label for="e5">☆</label>
+            <input th:field="*{rating}" th:value="2" name="stars" id="e4" type="radio"></a><label for="e4">☆</label>
+            <input th:field="*{rating}" th:value="3" name="stars" id="e3" type="radio"></a><label for="e3">☆</label>
+            <input th:field="*{rating}" th:value="4" name="stars" id="e2" type="radio"></a><label for="e2">☆</label>
+            <input th:field="*{rating}" th:value="5" name="stars" id="e1" type="radio"></a><label for="e1">☆</label>
+        </div>
+
+        <input type="submit" class="ghost" th:value="#{rate}">
+    </form>
+</div>
+</body>
+</html>

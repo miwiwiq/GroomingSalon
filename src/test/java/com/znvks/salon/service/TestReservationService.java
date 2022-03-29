@@ -1,26 +1,23 @@
 package com.znvks.salon.service;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.dao.FormDAO;
-import com.znvks.salon.dao.ReservationDAO;
-import com.znvks.salon.dto.FormDTO;
-import com.znvks.salon.dto.PetDTO;
-import com.znvks.salon.dto.ReservationDTO;
-import com.znvks.salon.entity.Condition;
-import com.znvks.salon.entity.Reservation;
+import com.znvks.salon.model.dto.ReservationDTO;
+import com.znvks.salon.model.entity.Condition;
+import com.znvks.salon.model.service.AccountService;
+import com.znvks.salon.model.service.FormService;
+import com.znvks.salon.model.service.ReservationService;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -50,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTestMethod
+    @AfterTransaction
     public void finish() {
         sessionFactory.close();
     }

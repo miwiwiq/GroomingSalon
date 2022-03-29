@@ -1,21 +1,23 @@
 package com.znvks.salon.dao;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.entity.Kind;
-import com.znvks.salon.entity.Pet;
-import com.znvks.salon.entity.account.User;
+import com.znvks.salon.model.dao.AccountDAO;
+import com.znvks.salon.model.dao.KindDAO;
+import com.znvks.salon.model.dao.PetDAO;
+import com.znvks.salon.model.entity.Kind;
+import com.znvks.salon.model.entity.Pet;
+import com.znvks.salon.model.entity.account.User;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -44,7 +46,7 @@ class PetDAOImplTest {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTestMethod
+    @AfterTransaction
     public void finish() {
         sessionFactory.close();
     }

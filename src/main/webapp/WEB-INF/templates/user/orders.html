@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/user/userHeader.html :: header"></div>
+
+<div class="form-container1">
+    <table>
+        <tr>
+            <th></th>
+            <th th:text="#{pet.name}"></th>
+            <th th:text="#{pet.kind}"></th>
+            <th th:text="#{services}"></th>
+            <th th:text="#{order.date}"></th>
+            <th th:text="#{order.time}"></th>
+            <th th:text="#{order.price}"></th>
+            <th th:text="#{order.rating}"></th>
+
+        </tr>
+        <tr th:each="order, iterStat : ${userOrders}">
+            <td class="btn" th:text="${iterStat.count}"></td>
+            <td th:text="${order.form.pet.name}"></td>
+            <td th:text="${order.form.pet.kind}"></td>
+            <td>
+                <div th:each="service, iterStat : ${order.form.services}">
+                    <div th:text="${service.name}"></div>
+                </div>
+            </td>
+            <td th:text="${order.date}">
+            </td>
+            <td th:text="${order.time}">
+            </td>
+            <td th:text="${order.finalPrice}"></td>
+            <td> <span  th:text="${order.rating}"></span>★</td>
+            <form th:method="get" th:action="@{/ratingPage/{id}(id=${order.id})}">
+                <td class="btn">
+                    <input type="submit" class="ghost" name="submit" th:value="#{rate}">
+                </td>
+            </form>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

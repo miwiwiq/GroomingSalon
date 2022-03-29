@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/admin/adminHeader.html :: header"></div>
+<div class="form-container1">
+    <form th:method="post" th:action="@{/editOrder}" th:object="${editingOrder}"
+          enctype="application/x-www-form-urlencoded">
+        <input th:field="*{id}" type="hidden" th:value="${editingOrder.id}">
+        <input name="formId" type="hidden" th:value="${editingOrder.form.id}">
+        <input type="text" name="pet_name" class="input" disabled th:value="${editingOrder.form.pet.name}">
+        <input type="text" name="pet_kind" class="input" disabled th:value="${editingOrder.form.pet.kind}">
+        <table>
+            <tr>
+                <th></th>
+                <th th:text="#{services.name}"></th>
+                <th th:text="#{services.duration}"></th>
+                <th th:text="#{services.price}"></th>
+            </tr>
+            <tr th:each="service, iterStat : ${editingOrder.form.services}">
+                <td class="btn" th:text="${iterStat.count}"></td>
+                <td th:text="${service.name}"></td>
+                <td th:text="${service.duration}"></td>
+                <td th:text="${service.price}"></td>
+            </tr>
+        </table>
+        <input th:field="*{finalPrice}" type="hidden" th:value="${editingOrder.finalPrice}">
+        <input type="date" th:field="*{date}"  th:value="${editingOrder.date}" name="date" class="input" required>
+        <input type="time" th:field="*{time}" th:value="${editingOrder.time}" name="time" class="input" required>
+        <input type="submit" class="ghost" th:value="#{edit}">
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Services</title>
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/header.html :: header"></div>
+<table>
+    <tr>
+        <th></th>
+        <th th:text="#{services.name}"></th>
+        <th th:text="#{services.duration}"></th>
+        <th th:text="#{services.price}"></th>
+    </tr>
+    <tr th:each="service, iterStat : ${services}">
+        <td class="btn" th:text="${iterStat.count}"></td>
+        <td th:text="${service.name}"></td>
+        <td th:text="${service.duration}"></td>
+        <td th:text="${service.price}"></td>
+    </tr>
+</table>
+</body>
+</html>

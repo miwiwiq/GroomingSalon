@@ -1,27 +1,19 @@
 package com.znvks.salon.service;
 
 import com.znvks.salon.config.DbConfigTest;
-import com.znvks.salon.dao.AccountDAO;
-import com.znvks.salon.dao.ServiceDAO;
-import com.znvks.salon.dto.AccountDTO;
-import com.znvks.salon.dto.PetDTO;
-import com.znvks.salon.dto.ServiceDTO;
-import com.znvks.salon.entity.account.Account;
-import com.znvks.salon.entity.account.Admin;
-import com.znvks.salon.entity.account.Level;
-import com.znvks.salon.entity.account.User;
+import com.znvks.salon.model.dto.AccountDTO;
+import com.znvks.salon.model.service.AccountService;
 import com.znvks.salon.util.TestDataImporter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -46,7 +38,7 @@ class TestAccountService {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTestMethod
+    @AfterTransaction
     public void finish() {
         sessionFactory.close();
     }

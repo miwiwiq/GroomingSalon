@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AdminPage</title>
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/admin/adminHeader.html :: header"></div>
+<div class="form-container1">
+    <table>
+        <tr>
+            <th></th>
+            <th th:text="#{user.username}"></th>
+            <th th:text="#{user.role}"></th>
+            <th th:text="#{user.name}"></th>
+            <th th:text="#{user.surname}"></th>
+            <th th:text="#{user.phone}"></th>
+            <th th:text="#{user.email}"></th>
+        </tr>
+        <tr th:each="user, iterStat : ${allUsers}">
+            <td class="btn" th:text="${iterStat.count}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.role}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.surname}"></td>
+            <td th:text="${user.phoneNumber}"></td>
+            <td th:text="${user.email}"></td>
+            <form th:method="get" th:action="@{/deleteUser/{id}(id=${user.id}) }">
+                <td class="btn">
+                    <input type="submit" class="ghost" name="submit" th:value="#{delete}">
+                </td>
+            </form>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

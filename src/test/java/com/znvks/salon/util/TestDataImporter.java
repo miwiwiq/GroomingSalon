@@ -1,14 +1,14 @@
 package com.znvks.salon.util;
 
-import com.znvks.salon.entity.Condition;
-import com.znvks.salon.entity.Form;
-import com.znvks.salon.entity.Kind;
-import com.znvks.salon.entity.Pet;
-import com.znvks.salon.entity.Reservation;
-import com.znvks.salon.entity.Service;
-import com.znvks.salon.entity.account.Admin;
-import com.znvks.salon.entity.account.Level;
-import com.znvks.salon.entity.account.User;
+import com.znvks.salon.model.entity.Condition;
+import com.znvks.salon.model.entity.Form;
+import com.znvks.salon.model.entity.Kind;
+import com.znvks.salon.model.entity.Pet;
+import com.znvks.salon.model.entity.Reservation;
+import com.znvks.salon.model.entity.Service;
+import com.znvks.salon.model.entity.account.Admin;
+import com.znvks.salon.model.entity.account.Level;
+import com.znvks.salon.model.entity.account.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

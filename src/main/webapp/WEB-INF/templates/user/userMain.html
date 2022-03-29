@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UserPage</title>
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/user/userHeader.html :: header"></div>
+<div class="form-container1">
+    <form th:method="post" th:action="@{/editUser}"
+          enctype="application/x-www-form-urlencoded" th:object="${account}">
+        <input th:field="*{id}" type="hidden" class="form-control" th:value="${account.id}">
+        <input type="text" th:field="*{username}" th:placeholder="#{enter.login}" class="input"
+               th:value="${account.username}" required disabled>
+        <input type="password" th:field="*{password}" th:placeholder="#{enter.password}" class="input"
+               th:value="${account.password}" required>
+        <input id="name" type="text" th:field="*{name}" th:placeholder="#{enter.name}" class="input"
+               th:value="${account.name}" required>
+        <input id="surname" type="text" th:field="*{surname}" th:placeholder="#{enter.surname}" class="input"
+               th:value="${account.surname}" required>
+        <input id="phone" type="text" th:field="*{phoneNumber}" th:placeholder="#{enter.phone}" pattern="[0-9]{3}[0-9]{2}[0-9]{7}"
+               class="input" th:value="${account.phoneNumber}" required>
+        <input id="email" type="email" th:field="*{email}" th:placeholder="#{enter.email}" class="input"
+               th:value="${account.email}" required>
+        <input type="submit" class="ghost" th:value="#{edit}">
+    </form>
+</div>
+</body>
+</html>

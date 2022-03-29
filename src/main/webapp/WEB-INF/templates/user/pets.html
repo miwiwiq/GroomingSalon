@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/resources/css/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/form.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/styles.css}">
+</head>
+<body>
+<div th:replace="/user/userHeader.html :: header"></div>
+<form th:method="get" th:action="@{/addPetPage}">
+    <input type="submit" class="btn ghost" th:value="#{pet.add}">
+</form>
+<div class="form-container1">
+    <table>
+        <tr>
+            <th></th>
+            <th th:text="#{pet.name}"></th>
+            <th th:text="#{pet.kind}"></th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr th:each="pet, iterStat : ${userPets}">
+            <td class="btn" th:text="${iterStat.count}"></td>
+            <td th:text="${pet.name}"></td>
+            <td th:text="${pet.kind}"></td>
+            <form th:method="get" th:action="@{/editPetPage/{id}(id=${pet.id})}">
+                <td class="btn">
+                    <input type="submit" class="ghost" name="submit" th:value="#{edit}">
+                </td>
+            </form>
+            <form th:method="get" th:action="@{/deletePet/{id}(id=${pet.id})}">
+                <td class="btn">
+                    <input type="submit" class="ghost" name="submit" th:value="#{delete}">
+                </td>
+            </form>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

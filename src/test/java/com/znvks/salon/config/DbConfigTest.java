@@ -1,6 +1,6 @@
 package com.znvks.salon.config;
 
-import com.znvks.salon.config.DbConfig;
+import com.znvks.salon.model.config.DbConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
