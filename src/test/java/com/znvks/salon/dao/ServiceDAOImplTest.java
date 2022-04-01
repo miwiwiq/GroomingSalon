@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ class ServiceDAOImplTest {
         TestDataImporter.importTestData(sessionFactory);
     }
 
-    @AfterTransaction
+    @AfterTestMethod
     public void finish() {
         sessionFactory.close();
     }
