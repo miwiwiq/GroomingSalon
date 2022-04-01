@@ -13,7 +13,7 @@
     <form th:method="post" th:action="@{/addForm}"
           enctype="application/x-www-form-urlencoded" th:object="${form}">
 
-        <select id="petId" name="petId" th:value="*{pet.id}">
+        <select id="petId" name="petId" th:value="*{pet.id}" required>
             <option th:value="${pet.id}" th:text="${pet.name}" th:each="pet : ${userPets}"></option>
         </select>
 
@@ -26,7 +26,7 @@
             </tr>
 
             <tr th:each="service : ${services}">
-              <td> <input type="checkbox" name="serviceId" th:value="${service.id}"></td>
+              <td> <input type="checkbox" name="serviceId" th:value="${service.id}" ></td>
                 <td th:text="${service.name}"></td>
                 <td th:text="${service.duration}"></td>
                 <td th:text="${service.price}"></td>

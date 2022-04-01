@@ -40,11 +40,11 @@
         <input type="time"  th:value="${ratingOrder.time}" name="time" class="input" required disabled>
 
         <div class="rating">
-            <input th:field="*{rating}" th:value="1" name="stars" id="e5" type="radio"></a><label for="e5">☆</label>
-            <input th:field="*{rating}" th:value="2" name="stars" id="e4" type="radio"></a><label for="e4">☆</label>
+            <input th:field="*{rating}" th:value="5" name="stars" id="e5" type="radio"></a><label for="e5">☆</label>
+            <input th:field="*{rating}" th:value="4" name="stars" id="e4" type="radio"></a><label for="e4">☆</label>
             <input th:field="*{rating}" th:value="3" name="stars" id="e3" type="radio"></a><label for="e3">☆</label>
-            <input th:field="*{rating}" th:value="4" name="stars" id="e2" type="radio"></a><label for="e2">☆</label>
-            <input th:field="*{rating}" th:value="5" name="stars" id="e1" type="radio"></a><label for="e1">☆</label>
+            <input th:field="*{rating}" th:value="2" name="stars" id="e2" type="radio"></a><label for="e2">☆</label>
+            <input th:field="*{rating}" th:value="1" name="stars" id="e1" type="radio"></a><label for="e1">☆</label>
         </div>
 
         <input type="submit" class="ghost" th:value="#{rate}">

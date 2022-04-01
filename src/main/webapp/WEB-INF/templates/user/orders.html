@@ -39,7 +39,7 @@
             </td>
             <td th:text="${order.finalPrice}"></td>
             <td> <span  th:text="${order.rating}"></span>★</td>
-            <form th:method="get" th:action="@{/ratingPage/{id}(id=${order.id})}">
+            <form th:method="get" th:action="@{/user/ratingPage/{id}(id=${order.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{rate}">
                 </td>

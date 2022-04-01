@@ -28,7 +28,7 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final FormService formService;
 
-    @GetMapping("/showUserOrders")
+    @GetMapping("/user/showUserOrders")
     public String showAllOrders(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userOrders", reservationService.getOrdersByAcc(account));
         if (Objects.equals("user", account.getRole())) {
@@ -38,13 +38,13 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/showOrders")
+    @GetMapping("/admin/showOrders")
     public String showOrders(Model model) {
         model.addAttribute("orders", reservationService.getAll());
         return "/admin/orders";
     }
 
-    @GetMapping("/reservation")
+    @PostMapping("/reservation")
     public String reservation(@RequestParam("formId") String formId, ReservationDTO reservation) {
         Optional<FormDTO> form = formService.getById(Long.valueOf(formId));
         if (form.isPresent()) {
@@ -53,14 +53,14 @@ public class ReservationController {
             formService.update(f);
             reservation.setForm(f);
             reservationService.save(reservation);
-            return "redirect:/showOrders";
+            return "redirect:/admin/showOrders";
 
         } else {
             return "redirect:/errorPage";
         }
     }
 
-    @GetMapping("/editOrderPage/{id}")
+    @GetMapping("/admin/editOrderPage/{id}")
     public String toEditPage(@PathVariable("id") String id, Model model) {
         Optional<ReservationDTO> reservationDTO = reservationService.getById(Long.parseLong(id));
         reservationDTO.ifPresent(r -> model.addAttribute("editingOrder", r));
@@ -75,23 +75,23 @@ public class ReservationController {
             reservation.setForm(form.get());
             reservationService.update(reservation);
             if (account.getRole().equals("user")) {
-                return "redirect:/showUserOrders";
+                return "redirect:/user/showUserOrders";
             } else if (account.getRole().equals("admin")) {
-                return "redirect:/showOrders";
+                return "redirect:/admin/showOrders";
             } else return "redirect:/errorPage";
         } else {
             return "redirect:/errorPage";
         }
     }
 
-    @GetMapping("/ratingPage/{id}")
+    @GetMapping("/user/ratingPage/{id}")
     public String toRatePage(@PathVariable("id") String id, Model model) {
         Optional<ReservationDTO> reservationDTO = reservationService.getById(Long.parseLong(id));
         reservationDTO.ifPresent(r -> model.addAttribute("ratingOrder", r));
         return "/user/rateOrder";
     }
 
-    @GetMapping("/deleteOrder/{id}")
+    @GetMapping("/admin/deleteOrder/{id}")
     public String deleteForm(@PathVariable("id") String id) {
         Optional<ReservationDTO> order = reservationService.getById(Long.parseLong(id));
         if (order.isPresent()) {
@@ -101,7 +101,7 @@ public class ReservationController {
             if (reservationService.getById(reservation.getId()).isEmpty()) {
                 form.setCondition(Condition.WAITING);
             }
-            return "redirect:/showOrders";
+            return "redirect:/admin/showOrders";
         } else {
             return "redirect:/errorPage";
         }

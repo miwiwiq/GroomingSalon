@@ -1,11 +1,12 @@
 package com.znvks.salon.model.service;
 
 import com.znvks.salon.model.dto.AccountDTO;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AccountService extends BaseService<AccountDTO> {
+public interface AccountService extends BaseService<AccountDTO>, UserDetailsService {
 
     List<AccountDTO> getAllUsers();
 

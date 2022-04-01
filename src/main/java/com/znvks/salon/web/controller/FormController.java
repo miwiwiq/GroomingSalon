@@ -41,7 +41,7 @@ public class FormController {
     private final ReservationService reservationService;
 
 
-    @GetMapping("/showUserForms")
+    @GetMapping("/user/showUserForms")
     public String showAllForms(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userForms", formService.getFormsByAcc(account));
         if (Objects.equals("user", account.getRole())) {
@@ -51,7 +51,7 @@ public class FormController {
         }
     }
 
-    @GetMapping("/showForms")
+    @GetMapping("/admin/showForms")
     public String showForms(Model model) {
         model.addAttribute("forms", formService.getFormsByCondition(Condition.WAITING));
         return "/admin/forms";
@@ -76,12 +76,12 @@ public class FormController {
             }
             form.setCondition(Condition.WAITING);
             formService.save(form);
-            return "redirect:/showUserForms";
+            return "redirect:/user/showUserForms";
         }
         return "redirect:/errorPage";
     }
 
-    @GetMapping("/acceptForm/{id}")
+    @GetMapping("/admin/acceptForm/{id}")
     public String acceptForm(@PathVariable("id") String id, Model model) {
         Optional<FormDTO> form = formService.getById(Long.parseLong(id));
         form.ifPresent(formDTO -> model.addAttribute("currentOrder", ReservationDTO
@@ -93,18 +93,18 @@ public class FormController {
 
 
 
-    @GetMapping("/declineForm/{id}")
+    @GetMapping("/admin/declineForm/{id}")
     public String declineForm(@PathVariable("id") String id) {
         Optional<FormDTO> form = formService.getById(Long.parseLong(id));
         form.ifPresent(f -> f.setCondition(Condition.DECLINED));
         form.ifPresent(formService::update);
-        return "redirect:/showForms";
+        return "redirect:/admin/showForms";
     }
 
-    @GetMapping("/deleteForm/{id}")
+    @GetMapping("/user/deleteForm/{id}")
     public String deleteForm(@PathVariable("id") String id) {
         Optional<FormDTO> form = formService.getById(Long.parseLong(id));
         form.ifPresent(formService::delete);
-        return "redirect:/showUserForms";
+        return "redirect:/user/showUserForms";
     }
 }

@@ -10,8 +10,8 @@
 </head>
 <body>
 <div th:replace="/admin/adminHeader.html :: header"></div>
-<form th:method="get" th:action="@{/addServicePage}">
-        <input type="submit" class="btn ghost" th:value="#{services.add}">
+<form th:method="get" th:action="@{/admin/addServicePage}">
+        <input type="submit" class="btn ghost longest" th:value="#{services.add}">
 </form>
 <div class="form-container1">
     <table>
@@ -27,12 +27,12 @@
             <td th:text="${service.duration}"></td>
             <td th:text="${service.price}"></td>
 
-            <form th:method="get" th:action="@{/editServicePage/{id}(id=${service.id})}">
+            <form th:method="get" th:action="@{/admin/editServicePage/{id}(id=${service.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{edit}">
                 </td>
             </form>
-            <form th:method="get" th:action="@{/deleteService/{id}(id=${service.id})}">
+            <form th:method="get" th:action="@{/admin/deleteService/{id}(id=${service.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{delete}">
                 </td>

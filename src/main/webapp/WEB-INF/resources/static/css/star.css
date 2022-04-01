@@ -40,7 +40,6 @@ a[href*="intent"] {
  * Rating styles
  */
 .rating {
-    width: 226px;
     margin: 0 auto 1em;
     font-size: 45px;
     overflow:hidden;

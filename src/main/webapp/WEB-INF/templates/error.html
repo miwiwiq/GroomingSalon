@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-
+<h1>
+    You did something wrong, please <a th:href="@{/}"> try again</a>.
+</h1>
+<span th:text="'Oops, something went wrong due to following reason:' + ${exceptionMessage}">Error text</span>
 </body>
 </html>

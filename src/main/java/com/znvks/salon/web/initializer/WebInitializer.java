@@ -1,6 +1,7 @@
-package com.znvks.salon.web;
+package com.znvks.salon.web.initializer;
 
 import com.znvks.salon.model.config.DbConfig;
+import com.znvks.salon.web.config.SecurityConfig;
 import com.znvks.salon.web.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -10,7 +11,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{DbConfig.class};
+        return new Class[]{DbConfig.class, SecurityConfig.class};
     }
 
     @Override

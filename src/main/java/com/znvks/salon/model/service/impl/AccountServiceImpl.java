@@ -10,11 +10,14 @@ import com.znvks.salon.model.mapper.AccountMapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -23,6 +26,14 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountDAO accountDAO;
     private final AccountMapper accountMapper;
+
+    private final Function<Account, UserDetails> userToUserDetails = user ->
+            org.springframework.security.core.userdetails.User
+                    .builder()
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities(user.getRole())
+                    .build();
 
     @Override
     public Optional<AccountDTO> getById(Long id) {
@@ -90,4 +101,11 @@ public class AccountServiceImpl implements AccountService {
         return accountDAO.isAuthenticate(accountMapper.mapToEntity(accountDTO));
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Account> maybeUser = accountDAO.getAccByUsername(username);
+        return maybeUser
+                .map(userToUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException("Can't find user with username: " + username));
+    }
 }

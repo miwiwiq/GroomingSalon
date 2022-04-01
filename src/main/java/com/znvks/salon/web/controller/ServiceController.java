@@ -30,7 +30,7 @@ public class ServiceController {
     private final ServiceService serviceService;
     private final PetService petService;
 
-    @GetMapping("/showServices")
+    @GetMapping({"/user/showServices", "/admin/showServices"})
     public String showAllServices(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("services", serviceService.getAll());
         if (Objects.nonNull(account)) {
@@ -55,6 +55,7 @@ public class ServiceController {
         }
     }
 
+
     @GetMapping("/services")
     public String showServices(Model model) {
         model.addAttribute("services", serviceService.getAll());
@@ -70,18 +71,18 @@ public class ServiceController {
     public String addService(ServiceDTO service) {
         if (Objects.nonNull(service)) {
             serviceService.save(service);
-            return "redirect:/showServices";
+            return "redirect:/admin/showServices";
         }
         return "redirect:/errorPage";
     }
 
-    @GetMapping("/addServicePage")
+    @GetMapping("/admin/addServicePage")
     public String toAddPage(Model model) {
         model.addAttribute("service", ServiceDTO.builder().build());
         return "/admin/addService";
     }
 
-    @GetMapping("/editServicePage/{id}")
+    @GetMapping("/admin/editServicePage/{id}")
     public String toEditPage(@PathVariable("id") String id, Model model) {
         Optional<ServiceDTO> serv = serviceService.getById(Long.parseLong(id));
         serv.ifPresent(s -> model.addAttribute("service", s));
@@ -92,16 +93,16 @@ public class ServiceController {
     public String editService(ServiceDTO service) {
         if (Objects.nonNull(service)) {
             serviceService.update(service);
-            return "redirect:/showServices";
+            return "redirect:/admin/showServices";
         } else {
             return "redirect:/errorPage";
         }
     }
 
-    @GetMapping("/deleteService/{id}")
+    @GetMapping("/admin/deleteService/{id}")
     public String deleteService(@PathVariable("id") String id) {
         Optional<ServiceDTO> service = serviceService.getById(Long.parseLong(id));
         service.ifPresent(serviceService::delete);
-        return "redirect:/showServices";
+        return "redirect:/admin/showServices";
     }
 }

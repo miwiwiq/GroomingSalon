@@ -29,7 +29,7 @@
             <td th:text="${user.surname}"></td>
             <td th:text="${user.phoneNumber}"></td>
             <td th:text="${user.email}"></td>
-            <form th:method="get" th:action="@{/deleteUser/{id}(id=${user.id}) }">
+            <form th:method="get" th:action="@{/admin/deleteUser/{id}(id=${user.id}) }">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{delete}">
                 </td>

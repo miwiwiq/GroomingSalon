@@ -30,7 +30,7 @@
                 </div>
             </td>
             <td th:text="${form.condition}"></td>
-            <form th:method="get" th:action="@{/deleteForm/{id}(id=${form.id})}">
+            <form th:method="get" th:action="@{/user/deleteForm/{id}(id=${form.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{delete}">
                 </td>

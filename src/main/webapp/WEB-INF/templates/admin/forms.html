@@ -31,12 +31,12 @@
                 </div>
             </td>
             <td th:text="${form.condition}"></td>
-            <form th:method="get" th:action="@{/acceptForm/{id}(id=${form.id})}">
+            <form th:method="get" th:action="@{/admin/acceptForm/{id}(id=${form.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{accept}">
                 </td>
             </form>
-            <form th:method="get" th:action="@{/declineForm/{id}(id=${form.id})}">
+            <form th:method="get" th:action="@{/admin/declineForm/{id}(id=${form.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{decline}">
                 </td>

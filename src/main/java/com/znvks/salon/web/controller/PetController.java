@@ -25,7 +25,7 @@ public class PetController {
 
     private final PetService petService;
 
-    @GetMapping("/showUserPets")
+    @GetMapping("/user/showUserPets")
     public String showUserPets(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userPets", petService.getPetsByAcc(account));
         if (Objects.equals("user", account.getRole())) {
@@ -40,7 +40,7 @@ public class PetController {
         return petService.getPetsByAcc(account);
     }
 
-    @GetMapping("/addPetPage")
+    @GetMapping("/user/addPetPage")
     public String toAddPage(Model model){
         model.addAttribute("pet", PetDTO.builder().build());
         return "/user/addPet";
@@ -51,12 +51,12 @@ public class PetController {
         if (Objects.nonNull(pet)) {
             pet.setUser(account);
             petService.save(pet);
-            return "redirect:/showUserPets";
+            return "redirect:/user/showUserPets";
         }
         return "redirect:/errorPage";
     }
 
-    @GetMapping("/editPetPage/{id}")
+    @GetMapping("/user/editPetPage/{id}")
     public String toEditPage(@PathVariable("id") String id, Model model){
         Optional<PetDTO> pet = petService.getById(Long.parseLong(id));
         pet.ifPresent(p -> model.addAttribute("pet", p));
@@ -68,16 +68,16 @@ public class PetController {
         if (Objects.nonNull(pet)) {
             pet.setUser(account);
             petService.update(pet);
-            return "redirect:/showUserPets";
+            return "redirect:/user/showUserPets";
         } else {
             return "redirect:/errorPage";
         }
     }
 
-    @GetMapping("/deletePet/{id}")
+    @GetMapping("/user/deletePet/{id}")
     public String deletePet(@PathVariable("id") String id) {
         Optional<PetDTO> pet = petService.getById(Long.parseLong(id));
         pet.ifPresent(petService::delete);
-        return "redirect:/showUserPets";
+        return "redirect:/user/showUserPets";
     }
 }

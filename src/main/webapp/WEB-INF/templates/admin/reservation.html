@@ -11,7 +11,7 @@
 <body>
 <div th:replace="/admin/adminHeader.html :: header"></div>
 <div class="form-container1">
-    <form th:method="get" th:action="@{/reservation}" th:object="${currentOrder}"
+    <form th:method="post" th:action="@{/reservation}" th:object="${currentOrder}"
           enctype="application/x-www-form-urlencoded">
         <input name="formId" type="hidden" th:value="${currentOrder.form.id}">
         <input type="text" name="pet_name" class="input" disabled th:value="${currentOrder.form.pet.name}">

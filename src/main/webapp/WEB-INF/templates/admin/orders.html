@@ -39,12 +39,12 @@
             </td>
             <td th:text="${order.finalPrice}"></td>
             <td> <span  th:text="${order.rating}"></span>★</td>
-            <form th:method="get" th:action="@{/editOrderPage/{id}(id=${order.id})}">
+            <form th:method="get" th:action="@{/admin/editOrderPage/{id}(id=${order.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{edit}">
                 </td>
             </form>
-            <form th:method="get" th:action="@{/deleteOrder/{id}(id=${order.id})}">
+            <form th:method="get" th:action="@{/admin/deleteOrder/{id}(id=${order.id})}">
                 <td class="btn">
                     <input type="submit" class="ghost" name="submit" th:value="#{delete}">
                 </td>
