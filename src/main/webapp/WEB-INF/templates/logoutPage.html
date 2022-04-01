@@ -11,12 +11,12 @@
 <div th:replace="/header.html :: header"></div>
 <form th:action="@{/home}" th:method="get">
     <div class="text-end">
-        <button type="submit" th:text="#{return}" class="btn btn-outline-light me-2">Log out</button>
+        <button type="submit" th:text="#{return}" class="btn ghost">Log out</button>
     </div>
 </form>
 <form th:action="@{/logout}" th:method="post">
     <div class="text-end">
-        <button type="submit" th:text="#{logout}" class="btn btn-outline-light me-2">Log out</button>
+        <button type="submit" th:text="#{logout}" class="btn ghost">Log out</button>
     </div>
 </form>
 </body>
