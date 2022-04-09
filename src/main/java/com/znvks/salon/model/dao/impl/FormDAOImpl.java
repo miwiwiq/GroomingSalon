@@ -9,6 +9,8 @@ import com.znvks.salon.model.entity.Pet_;
 import com.znvks.salon.model.entity.account.Account;
 import com.znvks.salon.model.entity.account.Account_;
 import com.znvks.salon.model.entity.account.User;
+import com.znvks.salon.model.util.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Slf4j
 @Repository
 public class FormDAOImpl extends BaseDAOImpl<Long, Form> implements FormDAO {
 
@@ -30,7 +33,9 @@ public class FormDAOImpl extends BaseDAOImpl<Long, Form> implements FormDAO {
         Join<Form, Pet> petJoin = root.join(Form_.pet);
         Join<Pet, User> userJoin = petJoin.join(Pet_.user);
         criteria.select(root).where(cb.equal(userJoin.get(Account_.username), account.getUsername()));
-        return session.createQuery(criteria).getResultList();
+        List<Form> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, account);
+        return resultList;
     }
 
     @Override
@@ -42,7 +47,9 @@ public class FormDAOImpl extends BaseDAOImpl<Long, Form> implements FormDAO {
         Join<Form, Pet> petJoin = root.join(Form_.pet);
         petJoin.join(Pet_.user);
         criteria.select(root).where(cb.equal(root.get(Form_.condition), condition));
-        return session.createQuery(criteria).getResultList();
+        List<Form> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, condition);
+        return resultList;
     }
 
 }

@@ -5,6 +5,7 @@ import com.znvks.salon.model.dto.AccountDTO;
 import com.znvks.salon.model.dto.PetDTO;
 import com.znvks.salon.model.dto.ServiceDTO;
 import com.znvks.salon.model.service.PetService;
+import com.znvks.salon.web.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,15 +24,16 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PetController {
 
+
     private final PetService petService;
 
     @GetMapping("/user/showUserPets")
     public String showUserPets(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userPets", petService.getPetsByAcc(account));
         if (Objects.equals("user", account.getRole())) {
-            return "/user/pets";
+            return PageUtil.USER_PETS;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -43,7 +45,7 @@ public class PetController {
     @GetMapping("/user/addPetPage")
     public String toAddPage(Model model){
         model.addAttribute("pet", PetDTO.builder().build());
-        return "/user/addPet";
+        return PageUtil.USER_ADD_PET;
     }
 
     @PostMapping("/addPet")
@@ -51,16 +53,16 @@ public class PetController {
         if (Objects.nonNull(pet)) {
             pet.setUser(account);
             petService.save(pet);
-            return "redirect:/user/showUserPets";
+            return PageUtil.REDIRECT_USER_SHOW_USER_PETS;
         }
-        return "redirect:/errorPage";
+        return PageUtil.REDIRECT_ERROR_PAGE;
     }
 
     @GetMapping("/user/editPetPage/{id}")
     public String toEditPage(@PathVariable("id") String id, Model model){
         Optional<PetDTO> pet = petService.getById(Long.parseLong(id));
         pet.ifPresent(p -> model.addAttribute("pet", p));
-        return "/user/editPet";
+        return PageUtil.USER_EDIT_PET;
     }
 
     @PostMapping("/editPet")
@@ -68,9 +70,9 @@ public class PetController {
         if (Objects.nonNull(pet)) {
             pet.setUser(account);
             petService.update(pet);
-            return "redirect:/user/showUserPets";
+            return PageUtil.REDIRECT_USER_SHOW_USER_PETS;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -78,6 +80,6 @@ public class PetController {
     public String deletePet(@PathVariable("id") String id) {
         Optional<PetDTO> pet = petService.getById(Long.parseLong(id));
         pet.ifPresent(petService::delete);
-        return "redirect:/user/showUserPets";
+        return PageUtil.REDIRECT_USER_SHOW_USER_PETS;
     }
 }

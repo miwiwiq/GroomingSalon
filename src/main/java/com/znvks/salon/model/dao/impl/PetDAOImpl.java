@@ -6,9 +6,12 @@ import com.znvks.salon.model.entity.Kind_;
 import com.znvks.salon.model.entity.Pet;
 
 import com.znvks.salon.model.entity.Pet_;
+import com.znvks.salon.model.entity.Service;
 import com.znvks.salon.model.entity.account.Account_;
 import com.znvks.salon.model.entity.account.User;
 import com.znvks.salon.model.entity.account.User_;
+import com.znvks.salon.model.util.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +22,7 @@ import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Slf4j
 @Repository
 public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
 
@@ -31,7 +35,9 @@ public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
         ListJoin<User, Pet> petJoin = root.join(User_.pets);
         petJoin.join(Pet_.kind);
         criteria.select(petJoin).where(cb.equal(root.get(Account_.username), user.getUsername()));
-        return session.createQuery(criteria).getResultList();
+        List<Pet> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, user);
+        return resultList;
     }
 
     @Override
@@ -43,7 +49,9 @@ public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
         root.join(Pet_.user);
         Join<Pet, Kind> kindJoin = root.join(Pet_.kind);
         criteria.select(root).where(cb.equal(kindJoin.get(Kind_.kind), kind));
-        return session.createQuery(criteria).getResultList();
+        List<Pet> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, kind);
+        return resultList;
     }
 
     @Override
@@ -53,11 +61,9 @@ public class PetDAOImpl extends BaseDAOImpl<Long, Pet> implements PetDAO {
         CriteriaQuery<Pet> criteria = cb.createQuery(Pet.class);
         Root<Pet> root = criteria.from(Pet.class);
         criteria.select(root).where(cb.equal(root.get(Pet_.name), name));
-        return session.createQuery(criteria).getResultList();
-    }
-
-    public void save(Session session, Pet pet) {
-        session.save(pet);
+        List<Pet> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, name);
+        return resultList;
     }
 
 }

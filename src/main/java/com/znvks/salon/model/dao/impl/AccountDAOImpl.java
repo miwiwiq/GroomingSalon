@@ -6,6 +6,8 @@ import com.znvks.salon.model.entity.account.Account_;
 import com.znvks.salon.model.entity.account.Admin;
 import com.znvks.salon.model.entity.account.User;
 import com.znvks.salon.model.entity.account.User_;
+import com.znvks.salon.model.util.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +17,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements AccountDAO {
 
@@ -25,7 +28,9 @@ public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements Accoun
         CriteriaQuery<User> criteria = cb.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
         criteria.select(root);
-        return session.createQuery(criteria).getResultList();
+        List<User> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO, resultList);
+        return resultList;
     }
 
     @Override
@@ -35,7 +40,9 @@ public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements Accoun
         CriteriaQuery<Admin> criteria = cb.createQuery(Admin.class);
         Root<Admin> root = criteria.from(Admin.class);
         criteria.select(root);
-        return session.createQuery(criteria).getResultList();
+        List<Admin> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO, resultList);
+        return resultList;
     }
 
     @Override
@@ -45,7 +52,9 @@ public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements Accoun
         CriteriaQuery<Account> criteria = cb.createQuery(Account.class);
         Root<Account> root = criteria.from(Account.class);
         criteria.select(root).where(cb.equal(root.get(Account_.username), username));
-        return session.createQuery(criteria).getResultStream().findFirst();
+        Optional<Account> account = session.createQuery(criteria).getResultStream().findFirst();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, account, username);
+        return account;
     }
 
     @Override
@@ -55,7 +64,9 @@ public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements Accoun
         CriteriaQuery<User> criteria = cb.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
         criteria.select(root).where(cb.equal(root.get(User_.name), name));
-        return session.createQuery(criteria).getResultList();
+        List<User> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO, resultList);
+        return resultList;
     }
 
     @Override
@@ -65,14 +76,14 @@ public class AccountDAOImpl extends BaseDAOImpl<Long, Account> implements Accoun
         CriteriaQuery<User> criteria = cb.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
         criteria.select(root).where(cb.equal(root.get(User_.surname), surname));
-        return session.createQuery(criteria).getResultList();
-    }
+        List<User> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO, resultList);
+        return resultList;    }
 
     @Override
     public boolean isAuthenticate(Account account) {
         Optional<Account> checkedAcc = getAccByUsername(account.getUsername());
         return checkedAcc.map(value -> value.getPassword().equals(account.getPassword())).orElse(false);
     }
-
 
 }

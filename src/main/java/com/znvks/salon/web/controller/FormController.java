@@ -11,6 +11,7 @@ import com.znvks.salon.model.service.FormService;
 import com.znvks.salon.model.service.PetService;
 import com.znvks.salon.model.service.ReservationService;
 import com.znvks.salon.model.service.ServiceService;
+import com.znvks.salon.web.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,33 +36,31 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FormController {
 
+
     private final FormService formService;
     private final PetService petService;
     private final ServiceService serviceService;
-    private final ReservationService reservationService;
-
 
     @GetMapping("/user/showUserForms")
     public String showAllForms(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userForms", formService.getFormsByAcc(account));
         if (Objects.equals("user", account.getRole())) {
-            return "/user/forms";
+            return PageUtil.USER_FORMS;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
     @GetMapping("/admin/showForms")
     public String showForms(Model model) {
         model.addAttribute("forms", formService.getFormsByCondition(Condition.WAITING));
-        return "/admin/forms";
+        return PageUtil.ADMIN_FORMS;
     }
 
     @ModelAttribute("userForms")
     public List<FormDTO> userForms(@SessionAttribute("account") AccountDTO account) {
         return formService.getFormsByAcc(account);
     }
-
 
     @PostMapping("/addForm")
     public String add(@RequestParam("serviceId") String[] serviceIds,
@@ -76,9 +75,9 @@ public class FormController {
             }
             form.setCondition(Condition.WAITING);
             formService.save(form);
-            return "redirect:/user/showUserForms";
+            return PageUtil.REDIRECT_USER_SHOW_USER_FORMS;
         }
-        return "redirect:/errorPage";
+        return PageUtil.REDIRECT_ERROR_PAGE;
     }
 
     @GetMapping("/admin/acceptForm/{id}")
@@ -88,23 +87,21 @@ public class FormController {
                 .builder()
                 .form(formDTO)
                 .build()));
-        return "/admin/reservation";
+        return PageUtil.ADMIN_RESERVATION;
     }
-
-
 
     @GetMapping("/admin/declineForm/{id}")
     public String declineForm(@PathVariable("id") String id) {
         Optional<FormDTO> form = formService.getById(Long.parseLong(id));
         form.ifPresent(f -> f.setCondition(Condition.DECLINED));
         form.ifPresent(formService::update);
-        return "redirect:/admin/showForms";
+        return PageUtil.REDIRECT_ADMIN_SHOW_FORMS;
     }
 
     @GetMapping("/user/deleteForm/{id}")
     public String deleteForm(@PathVariable("id") String id) {
         Optional<FormDTO> form = formService.getById(Long.parseLong(id));
         form.ifPresent(formService::delete);
-        return "redirect:/user/showUserForms";
+        return PageUtil.REDIRECT_USER_SHOW_USER_FORMS;
     }
 }

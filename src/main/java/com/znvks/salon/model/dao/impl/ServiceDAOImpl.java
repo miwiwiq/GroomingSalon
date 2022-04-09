@@ -5,6 +5,8 @@ import com.znvks.salon.model.entity.Form;
 import com.znvks.salon.model.entity.Form_;
 import com.znvks.salon.model.entity.Service;
 import com.znvks.salon.model.entity.Service_;
+import com.znvks.salon.model.util.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Slf4j
 @Repository
 public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements ServiceDAO {
 
@@ -25,7 +28,9 @@ public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements Servic
         Root<Form> root = criteria.from(Form.class);
         ListJoin<Form, Service> serviceJoin = root.join(Form_.services);
         criteria.select(serviceJoin).where(cb.equal(root.get(Form_.id), form.getId()));
-        return session.createQuery(criteria).getResultList();
+        List<Service> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, form);
+        return resultList;
     }
 
     @Override
@@ -35,7 +40,9 @@ public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements Servic
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
         criteria.select(root).where(cb.equal(root.get(Service_.name), name));
-        return session.createQuery(criteria).getResultList();
+        List<Service> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, name);
+        return resultList;
     }
 
     @Override
@@ -45,7 +52,9 @@ public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements Servic
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
         criteria.select(root).where(cb.lessThanOrEqualTo(root.get(Service_.duration), duration));
-        return session.createQuery(criteria).getResultList();
+        List<Service> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, duration);
+        return resultList;
     }
 
     @Override
@@ -55,7 +64,9 @@ public class ServiceDAOImpl extends BaseDAOImpl<Long, Service> implements Servic
         CriteriaQuery<Service> criteria = cb.createQuery(Service.class);
         Root<Service> root = criteria.from(Service.class);
         criteria.select(root).where(cb.lessThanOrEqualTo(root.get(Service_.price), price));
-        return session.createQuery(criteria).getResultList();
+        List<Service> resultList = session.createQuery(criteria).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, resultList, price);
+        return resultList;
     }
 
 }

@@ -8,6 +8,7 @@ import com.znvks.salon.model.dto.ServiceDTO;
 import com.znvks.salon.model.entity.Condition;
 import com.znvks.salon.model.service.FormService;
 import com.znvks.salon.model.service.ReservationService;
+import com.znvks.salon.web.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ReservationController {
 
+
     private final ReservationService reservationService;
     private final FormService formService;
 
@@ -32,16 +34,16 @@ public class ReservationController {
     public String showAllOrders(@SessionAttribute("account") AccountDTO account, Model model) {
         model.addAttribute("userOrders", reservationService.getOrdersByAcc(account));
         if (Objects.equals("user", account.getRole())) {
-            return "/user/orders";
+            return PageUtil.USER_ORDERS;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
     @GetMapping("/admin/showOrders")
     public String showOrders(Model model) {
         model.addAttribute("orders", reservationService.getAll());
-        return "/admin/orders";
+        return PageUtil.ADMIN_ORDERS;
     }
 
     @PostMapping("/reservation")
@@ -53,10 +55,10 @@ public class ReservationController {
             formService.update(f);
             reservation.setForm(f);
             reservationService.save(reservation);
-            return "redirect:/admin/showOrders";
+            return PageUtil.REDIRECT_ADMIN_SHOW_ORDERS;
 
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -64,7 +66,7 @@ public class ReservationController {
     public String toEditPage(@PathVariable("id") String id, Model model) {
         Optional<ReservationDTO> reservationDTO = reservationService.getById(Long.parseLong(id));
         reservationDTO.ifPresent(r -> model.addAttribute("editingOrder", r));
-        return "/admin/editOrder";
+        return PageUtil.ADMIN_EDIT_ORDER;
     }
 
     @PostMapping("/editOrder")
@@ -75,12 +77,12 @@ public class ReservationController {
             reservation.setForm(form.get());
             reservationService.update(reservation);
             if (account.getRole().equals("user")) {
-                return "redirect:/user/showUserOrders";
+                return PageUtil.REDIRECT_USER_SHOW_USER_ORDERS;
             } else if (account.getRole().equals("admin")) {
-                return "redirect:/admin/showOrders";
-            } else return "redirect:/errorPage";
+                return PageUtil.REDIRECT_ADMIN_SHOW_ORDERS;
+            } else return PageUtil.REDIRECT_ERROR_PAGE;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -88,7 +90,7 @@ public class ReservationController {
     public String toRatePage(@PathVariable("id") String id, Model model) {
         Optional<ReservationDTO> reservationDTO = reservationService.getById(Long.parseLong(id));
         reservationDTO.ifPresent(r -> model.addAttribute("ratingOrder", r));
-        return "/user/rateOrder";
+        return PageUtil.USER_RATE_ORDER;
     }
 
     @GetMapping("/admin/deleteOrder/{id}")
@@ -101,9 +103,9 @@ public class ReservationController {
             if (reservationService.getById(reservation.getId()).isEmpty()) {
                 form.setCondition(Condition.WAITING);
             }
-            return "redirect:/admin/showOrders";
+            return PageUtil.REDIRECT_ADMIN_SHOW_ORDERS;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 }

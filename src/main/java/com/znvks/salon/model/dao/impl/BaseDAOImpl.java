@@ -2,7 +2,9 @@ package com.znvks.salon.model.dao.impl;
 
 import com.znvks.salon.model.dao.BaseDAO;
 import com.znvks.salon.model.entity.BaseEntity;
+import com.znvks.salon.model.util.LoggerUtil;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Getter
 public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<PK>> implements BaseDAO<PK, E> {
 
@@ -32,13 +35,16 @@ public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<
     @Override
     public Optional<E> getById(PK id) {
         Session session = sessionFactory.getCurrentSession();
-        return Optional.ofNullable(session.find(clazz, id));
+        E entity = session.find(clazz, id);
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO_BY, entity, id);
+        return Optional.ofNullable(entity);
     }
 
     @Override
     public PK save(E entity) {
         Session session = sessionFactory.getCurrentSession();
         Serializable id = session.save(entity);
+        log.debug(LoggerUtil.ENTITY_WAS_SAVED_IN_DAO, entity);
         return (PK) id;
     }
 
@@ -46,6 +52,7 @@ public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<
     public void update(E entity) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(entity);
+        log.debug(LoggerUtil.ENTITY_WAS_UPDATED_IN_DAO, entity);
     }
 
     @Override
@@ -55,6 +62,7 @@ public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<
             Object persistentInstance = session.load(clazz, entity.getId());
             if (persistentInstance != null) {
                 session.delete(persistentInstance);
+                log.debug(LoggerUtil.ENTITY_WAS_DELETED_IN_DAO, entity);
             }
         }
     }
@@ -65,6 +73,8 @@ public abstract class BaseDAOImpl<PK extends Serializable, E extends BaseEntity<
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<E> criteria = cb.createQuery(clazz);
         Root<E> root = criteria.from(clazz);
-        return session.createQuery(criteria.select(root)).getResultList();
+        List<E> resultList = session.createQuery(criteria.select(root)).getResultList();
+        log.debug(LoggerUtil.ENTITY_WAS_FOUND_IN_DAO, resultList);
+        return resultList;
     }
 }

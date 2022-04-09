@@ -3,6 +3,7 @@ package com.znvks.salon.web.controller;
 import com.znvks.salon.model.dto.AccountDTO;
 import com.znvks.salon.model.entity.account.Level;
 import com.znvks.salon.model.service.AccountService;
+import com.znvks.salon.web.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,58 +40,20 @@ public class AccountController {
     private final AuthenticationManager authenticationManager;
 
 
-    @GetMapping("/addAdmin")
-    public String add(Model model) {
-        AccountDTO account = AccountDTO.builder()
-                .username("admin")
-                .password("adminpass")
-                .role("admin")
-                .level(Level.FIRST)
-                .build();
-        String rawPassword = account.getPassword();
-        account.setPassword(passwordEncoder.encode(rawPassword));
-        accountService.save(account);
-        model.addAttribute("account", account);
-        return "redirect:/";
-    }
-
     @GetMapping("/")
     public String startPage(Model model) {
             model.addAttribute("account", AccountDTO.builder().build());
-            return "/index";
+            return PageUtil.INDEX;
     }
 
     @GetMapping("/home")
     public String homePage(@SessionAttribute("account") AccountDTO a) {
         return switch (a.getRole()) {
-            case "user" -> "redirect: /user/userMain";
-            case "admin" -> "redirect:/admin/adminMain";
-            default -> "redirect:/errorPage";
+            case "user" -> PageUtil.REDIRECT_USER_MAIN;
+            case "admin" -> PageUtil.REDIRECT_ADMIN_MAIN;
+            default -> PageUtil.REDIRECT_ERROR_PAGE;
         };
     }
-
-//    @PostMapping("/signIn")
-//    public String login(Model model, AccountDTO accountDTO) {
-//        if (accountService.isAuthenticate(accountDTO)) {
-//            Optional<AccountDTO> optional = accountService.getAccByUsername(accountDTO.getUsername());
-//            if (optional.isPresent()) {
-//                AccountDTO account = optional.get();
-//                model.addAttribute("account", account);
-//                if (Objects.equals("user", account.getRole())) {
-//                    return "redirect:/user/userMain";
-//                } else if (Objects.equals("admin", account.getRole())) {
-//                    return "redirect:/admin/adminMain";
-//                } else {
-//                    return "redirect:/";
-//                }
-//            } else {
-//                return "redirect:/";
-//            }
-//        } else {
-//            return "redirect:/";
-//        }
-//    }
-
 
     @PostMapping("/signUp")
     public String register(Model model, AccountDTO account, HttpServletRequest request) {
@@ -106,11 +69,11 @@ public class AccountController {
                 authenticationToken.setDetails(new WebAuthenticationDetails(request));
                 Authentication authentication = authenticationManager.authenticate(authenticationToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                return "redirect:/success";
+                return PageUtil.REDIRECT_SUCCESS;
             }
-            return "redirect:/";
+            return PageUtil.REDIRECT_HOME;
         }
-        return "redirect:/";
+        return PageUtil.REDIRECT_HOME;
     }
 
     @GetMapping("/success")
@@ -122,32 +85,32 @@ public class AccountController {
             AccountDTO accountDto = accountByUsername.get();
             model.addAttribute("account", accountDto);
             return switch (accountDto.getRole()) {
-                case "user" -> "redirect: /user/userMain";
-                case "admin" -> "redirect:/admin/adminMain";
-                default -> "redirect:/errorPage";
+                case "user" -> PageUtil.REDIRECT_USER_MAIN;
+                case "admin" -> PageUtil.REDIRECT_ADMIN_MAIN;
+                default -> PageUtil.REDIRECT_ERROR_PAGE;
             };
         }
-        return "redirect:/errorPage";
+        return PageUtil.REDIRECT_ERROR_PAGE;
     }
 
     @GetMapping("/user/userMain")
     public String userMain() {
-        return "/user/userMain";
+        return PageUtil.USER_MAIN;
     }
 
     @GetMapping("/admin/adminMain")
     public String adminPage() {
-        return "/admin/adminMain";
+        return PageUtil.ADMIN_MAIN;
     }
 
     @GetMapping("/logout")
     public String logout() {
-        return "/logoutPage";
+        return PageUtil.LOGOUT_PAGE;
     }
 
     @GetMapping("/errorPage")
     public String errorPage() {
-        return "/error";
+        return PageUtil.ERROR;
     }
 
     @ModelAttribute("allUsers")
@@ -170,9 +133,9 @@ public class AccountController {
         if (Objects.nonNull(account.getUsername()) && Objects.nonNull(account.getPassword())) {
             accountService.update(account);
             model.addAttribute("account", account);
-            return "redirect:/user/userMain";
+            return PageUtil.REDIRECT_USER_MAIN;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -180,8 +143,7 @@ public class AccountController {
     public String deleteUser(@PathVariable("id") String id) {
         Optional<AccountDTO> userById = accountService.getById(Long.parseLong(id));
         userById.ifPresent(accountService::delete);
-        return "redirect:/admin/adminMain";
+        return PageUtil.REDIRECT_ADMIN_MAIN;
     }
-
 
 }

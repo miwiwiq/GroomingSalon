@@ -8,6 +8,7 @@ import com.znvks.salon.model.dto.ServiceDTO;
 import com.znvks.salon.model.entity.Condition;
 import com.znvks.salon.model.service.PetService;
 import com.znvks.salon.model.service.ServiceService;
+import com.znvks.salon.web.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ServiceController {
 
+
     private final ServiceService serviceService;
     private final PetService petService;
 
@@ -36,7 +38,7 @@ public class ServiceController {
         if (Objects.nonNull(account)) {
             switch (account.getRole()) {
                 case "admin":
-                    return "/admin/services";
+                    return PageUtil.ADMIN_SERVICES;
                 case "user": {
                     model.addAttribute("userPets", petService.getPetsByAcc(account));
                     model.addAttribute("form", FormDTO.builder()
@@ -45,13 +47,13 @@ public class ServiceController {
                             .condition(Condition.WAITING)
                             .build()
                     );
-                    return "/user/services";
+                    return PageUtil.USER_SERVICES;
                 }
                 default:
-                    return "/services";
+                    return PageUtil.SERVICES;
             }
         } else {
-            return "/services";
+            return PageUtil.SERVICES;
         }
     }
 
@@ -59,7 +61,7 @@ public class ServiceController {
     @GetMapping("/services")
     public String showServices(Model model) {
         model.addAttribute("services", serviceService.getAll());
-        return "/services";
+        return PageUtil.SERVICES;
     }
 
     @ModelAttribute("services")
@@ -71,31 +73,31 @@ public class ServiceController {
     public String addService(ServiceDTO service) {
         if (Objects.nonNull(service)) {
             serviceService.save(service);
-            return "redirect:/admin/showServices";
+            return PageUtil.REDIRECT_ADMIN_SHOW_SERVICES;
         }
-        return "redirect:/errorPage";
+        return PageUtil.REDIRECT_ERROR_PAGE;
     }
 
     @GetMapping("/admin/addServicePage")
     public String toAddPage(Model model) {
         model.addAttribute("service", ServiceDTO.builder().build());
-        return "/admin/addService";
+        return PageUtil.ADMIN_ADD_SERVICE;
     }
 
     @GetMapping("/admin/editServicePage/{id}")
     public String toEditPage(@PathVariable("id") String id, Model model) {
         Optional<ServiceDTO> serv = serviceService.getById(Long.parseLong(id));
         serv.ifPresent(s -> model.addAttribute("service", s));
-        return "/admin/editService";
+        return PageUtil.ADMIN_EDIT_SERVICE;
     }
 
     @PostMapping("/editService")
     public String editService(ServiceDTO service) {
         if (Objects.nonNull(service)) {
             serviceService.update(service);
-            return "redirect:/admin/showServices";
+            return PageUtil.REDIRECT_ADMIN_SHOW_SERVICES;
         } else {
-            return "redirect:/errorPage";
+            return PageUtil.REDIRECT_ERROR_PAGE;
         }
     }
 
@@ -103,6 +105,6 @@ public class ServiceController {
     public String deleteService(@PathVariable("id") String id) {
         Optional<ServiceDTO> service = serviceService.getById(Long.parseLong(id));
         service.ifPresent(serviceService::delete);
-        return "redirect:/admin/showServices";
+        return PageUtil.REDIRECT_ADMIN_SHOW_SERVICES;
     }
 }
